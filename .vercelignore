@@ -1,0 +1,15 @@
+# deploy only the site — raw project materials stay local
+Champion*
+Giga
+Swifftness
+REFFERENCE
+_source-assets
+_archive
+_progress
+_wds
+CLAUDE.md
+BAR - CV.pdf
+assets/about me
+.DS_Store
+Library
+*.fig

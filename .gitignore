@@ -1,0 +1,18 @@
+# only the site goes to GitHub — raw project materials stay local
+Champion*/
+Giga/
+Swifftness/
+Library/
+REFFERENCE/
+_source-assets/
+_archive/
+_progress/
+_wds/
+*.fig
+*.sketch
+*.rp
+BAR - CV.pdf
+CLAUDE.md
+assets/about me/
+.DS_Store
+.vercel/
