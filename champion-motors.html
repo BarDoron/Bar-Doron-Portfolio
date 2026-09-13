@@ -2006,6 +2006,14 @@ ScrollTrigger.create({
     return (img.naturalWidth || 4) / (img.naturalHeight || 3);
   };
   const srcOf = (img) => img.dataset.full || img.currentSrc || img.src;
+  // scroll lock that changes no layout (no overflow/padding on body → nothing behind the lightbox can jump):
+  // block wheel/touch/keys while open, except inside a scrollable lightbox box
+  const __lbScrollable = (t) => t && t.closest && t.closest('.lb-box.lb-scroll');
+  const __lbBlockWheel = (e) => { if (!__lbScrollable(e.target)) e.preventDefault(); };
+  const __lbBlockTouch = (e) => { if (!__lbScrollable(e.target)) e.preventDefault(); };
+  const __lbBlockKeys = (e) => { if (['Space', 'PageDown', 'PageUp', 'Home', 'End', 'ArrowDown', 'ArrowUp'].includes(e.code) && !/input|textarea/i.test(e.target.tagName)) e.preventDefault(); };
+  const lockScroll = () => { window.addEventListener('wheel', __lbBlockWheel, { passive: false }); window.addEventListener('touchmove', __lbBlockTouch, { passive: false }); window.addEventListener('keydown', __lbBlockKeys); };
+  const unlockScroll = () => { window.removeEventListener('wheel', __lbBlockWheel); window.removeEventListener('touchmove', __lbBlockTouch); window.removeEventListener('keydown', __lbBlockKeys); };
   const isTall = (img) => ratioOf(img) < 0.9;
   const fitRect = (img) => {
     const ar = ratioOf(img);
@@ -2040,14 +2048,7 @@ ScrollTrigger.create({
       '<button class="lb-x" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg></button>' +
       '<div class="lb-meta"><span class="lb-caption"></span><span class="lb-count"></span></div>';
     document.body.append(ov, box, ui);
-    // lock scroll without the scrollbar-width jump (nav title + toggle shift)
-    const sw = innerWidth - document.documentElement.clientWidth;
-    document.body.style.overflow = 'hidden';
-    if (sw > 0) {
-      document.body.style.paddingRight = sw + 'px';
-      const nav = document.getElementById('nav');
-      if (nav) nav.style.paddingRight = (parseFloat(getComputedStyle(nav).paddingRight) + sw) + 'px';
-    }
+    lockScroll();   // no body overflow / padding → nothing behind the lightbox moves
     setMeta();
     gsap.set(box, { left: r.left, top: r.top, width: r.width, height: r.height });
     setTimeout(() => { ov.classList.add('open'); ui.classList.add('open'); }, 20);
@@ -2097,8 +2098,7 @@ ScrollTrigger.create({
       onComplete: () => {
         ov.remove(); box.remove(); ui.remove();
         busy = false; isOpen = false;
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
+        unlockScroll();
         const nav = document.getElementById('nav');
         if (nav) nav.style.paddingRight = '';
         document.body.classList.remove('on-link');
@@ -2140,13 +2140,7 @@ ScrollTrigger.create({
     x.className = 'lb-x lb-film-x'; x.setAttribute('aria-label', 'Close');
     x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg>';
     document.body.append(ov, box, x);
-    const sw = innerWidth - document.documentElement.clientWidth;
-    document.body.style.overflow = 'hidden';
-    if (sw > 0) {
-      document.body.style.paddingRight = sw + 'px';
-      const nav = document.getElementById('nav');
-      if (nav) nav.style.paddingRight = (parseFloat(getComputedStyle(nav).paddingRight) + sw) + 'px';
-    }
+    lockScroll();   // no body overflow / padding → nothing behind the lightbox moves
     gsap.set(box, { left: r.left, top: r.top, width: r.width, height: r.height });
     setTimeout(() => { ov.classList.add('open'); x.classList.add('open'); }, 20);
     gsap.to(box, Object.assign(fitRect(), { duration: 0.55, ease: 'power3.inOut' }));
@@ -2168,8 +2162,7 @@ ScrollTrigger.create({
       onComplete: () => {
         ov.remove(); box.remove(); x.remove();
         busy = false; isOpen = false;
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
+        unlockScroll();
         const nav = document.getElementById('nav');
         if (nav) nav.style.paddingRight = '';
         document.body.classList.remove('on-link');
