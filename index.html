@@ -3191,7 +3191,13 @@ window.__coverAndGo = function(fromEl, href, title) {
     };
     return { beats, setBeat, stop: () => { clearInterval(typeTimer); caret.remove(); dots.remove(); } };
   };
-  const flips = (tl) => tl
+  // WebKit ignores backface-visibility on transformed children (the car polaroid showed mirrored over the song page),
+  // so each face is switched explicitly at the flip's midpoint: front on/back off before 90°, front off/back on after.
+  const face = (tl, sel, t) => tl
+        .set(sel + ' .nb-leaf-front', { autoAlpha: 0 }, t)
+        .set(sel + ' .nb-leaf-back', { autoAlpha: 1 }, t);
+  const flips = (tl) => {
+    tl
         .set('#nbLeaf1', { zIndex: 6 }, 0.5)
         .to('#nbLeaf1', { rotationY: -172, ease: 'none', duration: 0.7 }, 0.5)
         .set('#nbLeaf2', { zIndex: 7 }, 1.5)
@@ -3205,6 +3211,11 @@ window.__coverAndGo = function(fromEl, href, title) {
         .set('#nbLeaf5', { zIndex: 9 }, 3.65)
         .to('#nbLeaf5', { rotationY: -183, ease: 'none', duration: 0.6 }, 3.65)   // done by 4.25 → the last 15% of the scroll is the song spread, never a half-turned car
         .to({}, { duration: 0.001 }, 4.999);
+    [['#nbLeaf1', 0.85], ['#nbLeaf2', 1.85], ['#nbLeaf4', 2.85], ['#nbLeaf5', 3.95]].forEach(([sel, t]) => face(tl, sel, t));
+    return tl;
+  };
+  gsap.set('.nb-leaf .nb-leaf-back', { autoAlpha: 0 });   // backs start hidden (they'd otherwise bleed through in Safari)
+  gsap.set('.nb-cover-front', { autoAlpha: 0 });          // the cover lives open (−168°): its front face is never meant to show
   // the storyboard is scrubbed across the sticky track (CSS does the pinning — no GSAP pin/spacer)
   const { beats, setBeat } = makeStory();
   const isMobile = () => window.innerWidth <= 980;
