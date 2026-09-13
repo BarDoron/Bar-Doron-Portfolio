@@ -2189,15 +2189,6 @@
     setTimeout(() => c.remove(), 2650);
   });
   window.addEventListener('pageshow', (e) => { if (e.persisted) c.remove(); });
-  // back/forward cache (iOS Safari especially) restores the page exactly as it was left — with the transition cover
-  // still on top of everything (the "white screen on back"). Clear every transition layer and re-sync scroll triggers.
-  window.addEventListener('pageshow', (e) => {
-    if (!e.persisted) return;
-    document.querySelectorAll('.page-cover, .pt-veil, #pt-enter').forEach(el => el.remove());
-    sessionStorage.removeItem('pt-title');
-    document.body.classList.remove('on-link', 'cur-down');
-    if (window.ScrollTrigger) ScrollTrigger.refresh();
-  });
 })();
 </script>
 
@@ -3209,10 +3200,10 @@ window.__coverAndGo = function(fromEl, href, title) {
         .to('#nbAmp', { opacity: 1, scale: 1, ease: 'back.out(2.5)', duration: 0.2 }, 2.2)
         .to('#nbAmp', { opacity: 0, scale: .6, ease: 'power2.in', duration: 0.15 }, 2.42)
         .to('#nbLeaf4', { rotationY: -179, ease: 'none', duration: 0.7 }, 2.5)
-        .to('#nbVs', { opacity: 1, scale: 1, ease: 'back.out(2.5)', duration: 0.22 }, 3.3)
-        .to('#nbVs', { opacity: 0, scale: .6, ease: 'power2.in', duration: 0.18 }, 3.6)
-        .set('#nbLeaf5', { zIndex: 9 }, 3.8)
-        .to('#nbLeaf5', { rotationY: -183, ease: 'none', duration: 0.7 }, 3.8)
+        .to('#nbVs', { opacity: 1, scale: 1, ease: 'back.out(2.5)', duration: 0.22 }, 3.25)
+        .to('#nbVs', { opacity: 0, scale: .6, ease: 'power2.in', duration: 0.18 }, 3.5)
+        .set('#nbLeaf5', { zIndex: 9 }, 3.65)
+        .to('#nbLeaf5', { rotationY: -183, ease: 'none', duration: 0.6 }, 3.65)   // done by 4.25 → the last 15% of the scroll is the song spread, never a half-turned car
         .to({}, { duration: 0.001 }, 4.999);
   // the storyboard is scrubbed across the sticky track (CSS does the pinning — no GSAP pin/spacer)
   const { beats, setBeat } = makeStory();
@@ -3244,5 +3235,17 @@ window.__coverAndGo = function(fromEl, href, title) {
 })();
 </script>
 
+<script>
+// back/forward cache (iOS Safari especially) restores the page exactly as it was left — with the transition veil/cover
+// still on top of everything (the "white screen on Back"). Registered at top level: the transition IIFE above returns
+// early on normal loads, so a listener inside it never existed on the page that gets restored.
+window.addEventListener('pageshow', (e) => {
+  if (!e.persisted) return;
+  document.querySelectorAll('.page-cover, .pt-veil, #pt-enter').forEach(el => el.remove());
+  sessionStorage.removeItem('pt-title');
+  document.body.classList.remove('on-link', 'cur-down');
+  if (window.ScrollTrigger) ScrollTrigger.refresh();
+});
+</script>
 </body>
 </html>
