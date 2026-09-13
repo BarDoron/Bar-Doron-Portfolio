@@ -1835,7 +1835,7 @@ ScrollTrigger.create({
   const fitRect = (img) => {
     const ar = ratioOf(img);
     let tw = Math.min(innerWidth * 0.86, 1440), th = tw / ar;
-    if (isTall(img)) { th = innerHeight * 0.8; tw = Math.min(innerWidth * 0.86, 540); }
+    if (isTall(img)) { tw = Math.min(innerWidth * 0.86, 540); th = Math.min(innerHeight * 0.8, (tw - 20) / ar + 20); }   // never taller than the image itself (+ the 10px paper padding) — no empty paper under portrait photos
     else if (th > innerHeight * 0.8) { th = innerHeight * 0.8; tw = th * ar; }
     return { left: (innerWidth - tw) / 2, top: (innerHeight - th) / 2 - 10, width: tw, height: th };
   };
