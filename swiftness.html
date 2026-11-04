@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
   <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();</script>
   <title>Swiftness — Bar Doron</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Heebo:wght@400;500;600;700;800&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
@@ -873,40 +874,6 @@
       .field-print--manager { width: min(420px, 100%); }
     }
 
-    /* if I built it today — AI cards */
-    .ai-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 48px;
-      max-width: 980px;
-    }
-    .ai-card {
-      background: #FDFCFA;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      box-shadow: 0 1px 3px rgba(24,22,15,.05);
-      padding: 30px 32px 28px;
-    }
-    [data-theme="dark"] .ai-card {
-      background: #1A1A1A;
-      box-shadow: 0 1px 3px rgba(0,0,0,.4);
-    }
-    .ai-card-title {
-      font-family: var(--fd);
-      font-size: 20px; font-weight: 800;
-      font-variation-settings: 'opsz' 20, 'wght' 800;
-      letter-spacing: -0.02em; text-transform: none;
-      color: var(--ink);
-      margin-bottom: 14px;
-    }
-    .ai-card-body {
-      font-family: var(--fm); font-size: 10.5px; font-weight: 400;
-      letter-spacing: 0.13em; line-height: 2.1;
-      color: var(--ink-dim); text-transform: uppercase;
-    }
-    @media (max-width: 800px) { .ai-grid { grid-template-columns: 1fr; } }
-
     /* turn quote — words ink in on scroll, key phrase gets the marker */
     .turn-quote .tw { opacity: .14; }
     .turn-mark {
@@ -1356,6 +1323,8 @@
       .ui-loupe[style*="left:5"], .ui-loupe[style*="left:6"], .ui-loupe[style*="left:7"], .ui-loupe[style*="left: 5"], .ui-loupe[style*="left: 6"], .ui-loupe[style*="left: 7"] { margin-left: -16px; }
     }
 </style>
+  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=mw2jgi0d" />
+  <script src="assets/ai-today/ai-today.js?v=mw2jgi0d" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#ch-challenge">Skip to content</a>
@@ -1759,32 +1728,81 @@
 
 <!-- ROLE -->
 <!-- IF I BUILT IT TODAY -->
-<section class="cs-section" id="ch-ai">
-  <div class="eyebrow">
-    <div class="eyebrow-rule"></div>
-    <span class="eyebrow-text">If I built it today</span>
-  </div>
-  <div class="phase-head">
-    <span class="decision-num">AI</span>
-    <h2 class="phase-title">Same questions, better answers</h2>
-  </div>
-  <p class="phase-body">The platform shipped before the AI era. Today, the same question-first thinking would go further — AI sitting inside the answers, not beside them.</p>
-  <div class="ai-grid">
-    <div class="ai-card">
-      <h3 class="ai-card-title">Ask it <span class="mark-hl">like a person</span></h3>
-      <p class="ai-card-body">Type or say the question — 'how much will I have at 67?' — and the answer arrives in plain language, with the number and how it was calculated.</p>
+<section class="cs-section aic" id="ch-ai">
+  <div class="aic-grid" id="aic-swiftness">
+    <div class="aic-head">
+    <div class="eyebrow">
+      <div class="eyebrow-rule"></div>
+      <span class="eyebrow-text">If I built it today</span>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">The status <span class="mark-hl">writes itself</span></h3>
-      <p class="ai-card-body">A personal summary generated per saver: 'You're on track. Two funds, one gap worth checking.' The children's-explanation principle, automated.</p>
+    <div class="phase-head">
+      <span class="decision-num">AI</span>
+      <h2 class="phase-title">Same questions, better answers</h2>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">Tooltips that <span class="mark-hl">adapt</span></h3>
-      <p class="ai-card-body">Explanations matched to the reader: first-timers get the analogy, savvy users get the formula. Same term, right depth for each.</p>
+    <p class="phase-body">The platform shipped before the AI era. Today, the same question-first thinking would go further — AI sitting inside the answers, not beside them.</p>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">Letters, <span class="mark-hl">translated</span></h3>
-      <p class="ai-card-body">Upload any pension letter; it comes back as three plain sentences — what changed, what it means, what to do.</p>
+    <div class="ideas" aria-label="Swiftness ideas">
+      <div class="idea-item">
+        <button class="idea" type="button" id="sw-t0" aria-controls="sw-p0" aria-expanded="true"><span class="prog"><i></i></span><span class="idea-n">01</span><span class="idea-t">Ask it <mark>like a person</mark></span></button>
+        <div class="idea-panel open" id="sw-p0"><div><p>Ask the way the question sits in your head. The answer comes with the number and how it was calculated.</p></div></div>
+      </div>
+      <div class="idea-item">
+        <button class="idea" type="button" id="sw-t3" aria-controls="sw-p3" aria-expanded="false"><span class="prog"><i></i></span><span class="idea-n">02</span><span class="idea-t">Letters, <mark>translated</mark></span></button>
+        <div class="idea-panel" id="sw-p3"><div><p>A pension letter comes back as three plain sentences: what changed, what it means, what to do.</p></div></div>
+      </div>
+    </div>
+    <div class="stage">
+      <figure class="print">
+        <span class="sticker"><i></i>Concept · not shipped</span>
+        <div class="scenes">
+  
+          <!-- 01 ask -->
+          <div class="scene on">
+            <div class="ui sw" id="sw" dir="rtl" lang="he">
+              <div class="sw-bar"><span class="sw-logo">ס</span><span>החיסכון שלי</span><span class="sw-user" aria-hidden="true">ד.ל</span></div>
+              <div class="sw-thread" id="swThread" aria-live="polite"></div>
+              <div class="sw-ask">
+                <div class="sw-input" id="swInput"><span id="swTyped"></span><span class="sw-caret"></span><span class="sw-ph" id="swPh">שאלו כל שאלה על החיסכון שלכם…</span></div>
+                <div class="sw-chips" id="swChips">
+                  <button type="button" data-q="age">כמה יהיה לי בגיל 67?</button>
+                  <button type="button" data-q="drop">למה היתרה ירדה במרץ?</button>
+                  <button type="button" data-q="more">ומה אם אפקיד 500 ₪ יותר?</button>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- 04 letters -->
+          <div class="scene">
+            <div class="ui swl" id="swl" dir="rtl" lang="he">
+              <div class="sw-bar"><span class="sw-logo">ס</span><span>מכתבים מהקרן</span><span class="sw-user" aria-hidden="true">ד.ל</span></div>
+              <div class="swl-body">
+                <div class="swl-letter" id="swlLetter">
+                  <div class="swl-paper">
+                    <p class="swl-lh">קרן הפנסיה · הודעה לעמית</p>
+                    <p class="swl-subj">הנדון: שינוי מסלול השקעה בהתאם לגיל</p>
+                    <p data-src="1">בהתאם להוראות תקנון הקרן ולהוראות הממונה בדבר מסלולי השקעה התלויים בגיל, הננו להודיעך כי החל מיום 1.1.2027 יועברו כספייך למסלול לבני 50 עד 60.</p>
+                    <p data-src="2">מסלול זה מאופיין בחשיפה מופחתת לנכסים בעלי סיכון, ובכלל זה למניות, ובחשיפה מוגברת לאיגרות חוב.</p>
+                    <p data-src="3">ככל שהינך מעוניין/ת להמשיך ולהשקיע במסלול הנוכחי, עליך להודיע על כך לקרן בכתב עד ליום 31.12.2026.</p>
+                    <p class="swl-fine">אין באמור לעיל כדי להוות ייעוץ או שיווק השקעות. התשואות בעבר אינן מעידות על התשואות בעתיד. לפרטים נוספים ניתן לפנות למוקד שירות הלקוחות.</p>
+                    <div class="swl-scan" id="swlScan"></div>
+                  </div>
+                </div>
+                <div class="swl-out">
+                  <button class="swl-up" type="button" id="swlUp">↑ העלאת מכתב</button>
+                  <ol class="swl-cards">
+                    <li><button class="swl-card" type="button" data-src="1"><span class="swl-k">מה השתנה</span><span>בינואר הכסף שלכם עובר אוטומטית למסלול לגילאי 50–60, כי אתם מגיעים לגיל 50.</span></button></li>
+                    <li><button class="swl-card" type="button" data-src="2"><span class="swl-k">מה זה אומר</span><span>פחות מניות ויותר אג״ח: פחות עליות וירידות, ובדרך כלל גם תשואה נמוכה יותר לאורך זמן.</span></button></li>
+                    <li><button class="swl-card" type="button" data-src="3"><span class="swl-k">מה לעשות</span><span>אם זה מתאים לכם, לא צריך לעשות כלום. כדי להישאר במסלול הנוכחי, הודיעו לקרן עד 31 בדצמבר.</span></button></li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </figure>
+      <div class="ctl"><span class="state" data-state>Playing both · tap to take over</span><button class="replay" type="button">Play all</button></div>
     </div>
   </div>
 </section>

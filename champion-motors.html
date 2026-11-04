@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
   <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();</script>
   <title>Champion Motors — Bar Doron</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Heebo:wght@400;500;600;700;800&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
@@ -832,40 +833,6 @@
     }
     @media (max-width: 800px) { .goals-grid { grid-template-columns: 1fr; gap: 40px; } }
 
-    /* if I built it today — AI cards */
-    .ai-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 48px;
-      max-width: 980px;
-    }
-    .ai-card {
-      background: #FDFCFA;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      box-shadow: 0 1px 3px rgba(24,22,15,.05);
-      padding: 30px 32px 28px;
-    }
-    [data-theme="dark"] .ai-card {
-      background: #1A1A1A;
-      box-shadow: 0 1px 3px rgba(0,0,0,.4);
-    }
-    .ai-card-title {
-      font-family: var(--fd);
-      font-size: 20px; font-weight: 800;
-      font-variation-settings: 'opsz' 20, 'wght' 800;
-      letter-spacing: -0.02em; text-transform: none;
-      color: var(--ink);
-      margin-bottom: 14px;
-    }
-    .ai-card-body {
-      font-family: var(--fm); font-size: 10.5px; font-weight: 400;
-      letter-spacing: 0.13em; line-height: 2.1;
-      color: var(--ink-dim); text-transform: uppercase;
-    }
-    @media (max-width: 800px) { .ai-grid { grid-template-columns: 1fr; } }
-
     /* paper grid — where the paper lived */
     .paper-grid {
       display: grid; grid-template-columns: 1fr 1fr;
@@ -1373,6 +1340,8 @@
       .ui-loupe[style*="left:5"], .ui-loupe[style*="left:6"], .ui-loupe[style*="left:7"], .ui-loupe[style*="left: 5"], .ui-loupe[style*="left: 6"], .ui-loupe[style*="left: 7"] { margin-left: -16px; }
     }
 </style>
+  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=mw2jgi0d" />
+  <script src="assets/ai-today/ai-today.js?v=mw2jgi0d" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#ch-challenge">Skip to content</a>
@@ -1797,32 +1766,108 @@
 
 <!-- ROLE -->
 <!-- IF I BUILT IT TODAY -->
-<section class="cs-section" id="ch-ai">
-  <div class="eyebrow">
-    <div class="eyebrow-rule"></div>
-    <span class="eyebrow-text">If I built it today</span>
-  </div>
-  <div class="phase-head">
-    <span class="decision-num">AI</span>
-    <h2 class="phase-title">Same floor, new answers</h2>
-  </div>
-  <p class="phase-body">The system shipped before the AI era. If I were designing it today, AI wouldn't be a feature bolted on top — it would sit inside the decisions that already worked.</p>
-  <div class="ai-grid">
-    <div class="ai-card">
-      <h3 class="ai-card-title"><span class="mark-hl">Voice-first</span> job cards</h3>
-      <p class="ai-card-body">A mechanic under a chassis doesn't type. Notes get dictated in Hebrew, Arabic or Russian — transcribed, translated and filed into the structured note system. The multilingual floor, solved by a model instead of a phrasebook.</p>
+<section class="cs-section aic" id="ch-ai">
+  <div class="aic-grid" id="aic-champion">
+    <div class="aic-head">
+    <div class="eyebrow">
+      <div class="eyebrow-rule"></div>
+      <span class="eyebrow-text">If I built it today</span>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">The card <span class="mark-hl">writes itself</span></h3>
-      <p class="ai-card-body">Point the camera at the dashboard warning light; the job card drafts the professional fault description from the photo. The mechanic confirms instead of composing — media was already in the spec, now it does the paperwork.</p>
+    <div class="phase-head">
+      <span class="decision-num">AI</span>
+      <h2 class="phase-title">Same floor, new answers</h2>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">Priority that <span class="mark-hl">learns</span></h3>
-      <p class="ai-card-body">The hybrid drag-and-drop stays. But the automatic weighting learns from every manual override the manager makes — his judgment quietly trains his own board.</p>
+    <p class="phase-body">The system shipped before the AI era. If I were designing it today, AI wouldn't be a feature bolted on top — it would sit inside the decisions that already worked.</p>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">Promises that <span class="mark-hl">hold</span></h3>
-      <p class="ai-card-body">Return-time estimates predicted from history — fault type, parts, floor load. At-risk promises get flagged hours before they're late, not when the customer is standing at the desk.</p>
+    <div class="ideas" aria-label="Champion Motors ideas">
+      <div class="idea-item">
+        <button class="idea" type="button" id="ch-t1" aria-controls="ch-p1" aria-expanded="true"><span class="prog"><i></i></span><span class="idea-n">01</span><span class="idea-t">The card <mark>writes itself</mark></span></button>
+        <div class="idea-panel open" id="ch-p1"><div><p>Photograph the warning light and the job card drafts the fault description. The mechanic confirms instead of typing.</p></div></div>
+      </div>
+      <div class="idea-item">
+        <button class="idea" type="button" id="ch-t2" aria-controls="ch-p2" aria-expanded="false"><span class="prog"><i></i></span><span class="idea-n">02</span><span class="idea-t">Priority that <mark>learns</mark></span></button>
+        <div class="idea-panel" id="ch-p2"><div><p>Every manual override teaches the board. It suggests the change, and the manager decides.</p></div></div>
+      </div>
+    </div>
+    <div class="stage">
+      <figure class="print">
+        <span class="sticker"><i></i>Concept · not shipped</span>
+        <div class="scenes">
+  
+          <!-- 01 the card writes itself -->
+          <div class="scene on">
+            <div class="ui ch" id="ch" dir="rtl" lang="he">
+              <div class="ch-cam" dir="ltr">
+                <div class="ch-view">
+                  <svg viewBox="0 0 400 500" aria-hidden="true">
+                    <circle cx="200" cy="240" r="170" fill="none" stroke="#2c3038" stroke-width="18"/>
+                    <path d="M62 300 A150 150 0 1 1 338 300" fill="none" stroke="#3a3f49" stroke-width="3" stroke-dasharray="2 14"/>
+                    <path d="M62 300 A150 150 0 0 1 120 125" fill="none" stroke="#e8e8e8" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+                    <line x1="200" y1="240" x2="120" y2="150" stroke="#E14B3B" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="200" cy="240" r="12" fill="#1a1c21" stroke="#3a3f49" stroke-width="3"/>
+                    <text x="200" y="318" fill="#8b919c" font-family="system-ui, sans-serif" font-size="22" text-anchor="middle">x1000 rpm</text>
+                    <g transform="translate(150 196)">
+                      <rect x="-10" y="-14" width="120" height="76" rx="14" fill="rgba(245,165,36,.10)"/>
+                      <g fill="#F5A524" style="filter: drop-shadow(0 0 6px rgba(245,165,36,.9))">
+                        <path d="M14 8h14v-5h20v5h10l6 6h6v-6h8v28h-8v-6h-6v12h-30l-6-6h-8v-8h-6v10h-8v-24h8v6h6z"/>
+                      </g>
+                    </g>
+                    <g transform="translate(70 400)" fill="#3a3f49"><rect x="0" y="0" width="34" height="22" rx="3"/><rect x="5" y="-5" width="6" height="5"/><rect x="23" y="-5" width="6" height="5"/></g>
+                    <g transform="translate(300 398)" fill="#3a3f49"><path d="M0 20 q6-22 22-20 q14 2 14 20z"/><rect x="-4" y="20" width="44" height="5" rx="2"/></g>
+                  </svg>
+                  <div class="ch-hud"></div>
+                  <div class="ch-scan" id="chScan"></div>
+                  <div class="ch-box" id="chBox"><span>נורת מנוע · 94%</span></div>
+                  <div class="ch-flash" id="chFlash"></div>
+                </div>
+                <button class="ch-shutter" id="chShutter" type="button" aria-label="צילום לוח המחוונים"><span></span></button>
+                <div class="ch-shutter-l" dir="rtl">צלמו את לוח המחוונים</div>
+              </div>
+              <div class="ch-card">
+                <div class="ch-head"><span class="plate">542-33-894</span><span class="ch-car">גולף TSI 1.0 · 2019</span><span class="ch-bay">עמדה 4</span></div>
+                <div class="ch-src">נוסח מתוך <b>תמונה אחת</b> · יש לאשר לפני שזה עולה ללוח</div>
+                <div class="ch-lang" role="tablist" aria-label="שפת הכרטיס" id="chLang">
+                  <button type="button" role="tab" data-l="he" aria-selected="true">עב</button>
+                  <button type="button" role="tab" data-l="en" aria-selected="false">EN</button>
+                  <button type="button" role="tab" data-l="ru" aria-selected="false">РУ</button>
+                  <button type="button" role="tab" data-l="ar" aria-selected="false">عر</button>
+                </div>
+                <dl class="ch-fields">
+                  <div><dt>תקלה</dt><dd data-f="fault" dir="auto"></dd></div>
+                  <div><dt>סיבה משוערת</dt><dd data-f="cause" dir="auto"></dd></div>
+                  <div><dt>עדיפות</dt><dd data-f="prio"></dd></div>
+                  <div><dt>הערכת זמן</dt><dd data-f="est"></dd></div>
+                  <div><dt>חלקים</dt><dd data-f="parts"></dd></div>
+                </dl>
+                <p class="ch-note">הנורה דולקת קבוע ולא מהבהבת. יש לקרוא קוד OBD כדי לאשר את הסיבה.</p>
+                <div class="ch-actions"><button class="ch-edit" id="chEdit" type="button">עריכה</button><button class="ch-ok" id="chOk" type="button">אישור</button></div>
+                <p class="ch-sent" id="chSent" hidden>✓ נוסף ללוח · 10:32</p>
+              </div>
+            </div>
+          </div>
+  
+          <!-- 03 priority that learns -->
+          <div class="scene">
+            <div class="ui chp" id="chp" dir="rtl" lang="he">
+              <div class="ui-top"><b>לוח עבודה</b><span class="ui-mute">יום ג׳ · 10:30</span><span class="ui-chip">מיון אוטומטי + ידני</span></div>
+              <div class="chp-body">
+                <ol class="chp-list" id="chpList"></ol>
+                <div class="collapse chp-learn" id="chpLearn"><div><div class="chp-learn-in">
+                  <p class="chp-k">✦ הלוח למד ממך</p>
+                  <p>זו הפעם הרביעית השבוע שהקדמת רכב ליסינג שחוזר היום, מעל עבודה ארוכה יותר.</p>
+                  <div class="chp-hist">העברות ידניות: <span>א׳ · 118-07-552</span><span>ב׳ · 640-31-209</span><span>ב׳ · 377-52-018</span><span>היום · 266-41-077</span></div>
+                  <p>להוסיף לחישוב העדיפות: <b>ליסינג וחוזר היום</b> <bdi dir="ltr">+25</bdi>?</p>
+                  <div class="acts"><button class="btn dark" type="button" id="chpYes">כן, לעדכן</button><button class="btn" type="button" id="chpNo">לא עכשיו</button></div>
+                </div></div></div>
+                <p class="chp-done" id="chpDone" hidden>✓ הכלל נוסף. הלוח מסדר לפיו מעכשיו, ואפשר עדיין לגרור ידנית.</p>
+                <p class="chp-hint" id="chpHint">‏↑ מקדים עבודה ידנית. הלוח לומד מההעברות שלך.</p>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </figure>
+      <div class="ctl"><span class="state" data-state>Playing both · tap to take over</span><button class="replay" type="button">Play all</button></div>
     </div>
   </div>
 </section>

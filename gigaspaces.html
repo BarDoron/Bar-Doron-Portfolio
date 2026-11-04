@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
   <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();</script>
   <title>GigaSpaces — Bar Doron</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Heebo:wght@400;500;600;700;800&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
@@ -893,40 +894,6 @@
       .field-print--manager { width: min(420px, 100%); }
     }
 
-    /* if I built it today — AI cards */
-    .ai-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 48px;
-      max-width: 980px;
-    }
-    .ai-card {
-      background: #FDFCFA;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      box-shadow: 0 1px 3px rgba(24,22,15,.05);
-      padding: 30px 32px 28px;
-    }
-    [data-theme="dark"] .ai-card {
-      background: #1A1A1A;
-      box-shadow: 0 1px 3px rgba(0,0,0,.4);
-    }
-    .ai-card-title {
-      font-family: var(--fd);
-      font-size: 20px; font-weight: 800;
-      font-variation-settings: 'opsz' 20, 'wght' 800;
-      letter-spacing: -0.02em; text-transform: none;
-      color: var(--ink);
-      margin-bottom: 14px;
-    }
-    .ai-card-body {
-      font-family: var(--fm); font-size: 10.5px; font-weight: 400;
-      letter-spacing: 0.13em; line-height: 2.1;
-      color: var(--ink-dim); text-transform: uppercase;
-    }
-    @media (max-width: 800px) { .ai-grid { grid-template-columns: 1fr; } }
-
     /* turn quote — words ink in on scroll, key phrase gets the marker */
     .turn-quote .tw { opacity: .14; }
     .turn-mark {
@@ -1243,6 +1210,8 @@
       .ui-loupe[style*="left:5"], .ui-loupe[style*="left:6"], .ui-loupe[style*="left:7"], .ui-loupe[style*="left: 5"], .ui-loupe[style*="left: 6"], .ui-loupe[style*="left: 7"] { margin-left: -16px; }
     }
 </style>
+  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=mw2jgi0d" />
+  <script src="assets/ai-today/ai-today.js?v=mw2jgi0d" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#ch-challenge">Skip to content</a>
@@ -1624,32 +1593,88 @@
 
 <!-- ROLE -->
 <!-- IF I BUILT IT TODAY -->
-<section class="cs-section" id="ch-ai">
-  <div class="eyebrow">
-    <div class="eyebrow-rule"></div>
-    <span class="eyebrow-text">If I built it today</span>
-  </div>
-  <div class="phase-head">
-    <span class="decision-num">AI</span>
-    <h2 class="phase-title">Three languages, one translator</h2>
-  </div>
-  <p class="phase-body">The platform shipped before the AI era. Today, the three languages would get a fourth speaker — AI inside the monitoring, not bolted above it.</p>
-  <div class="ai-grid">
-    <div class="ai-card">
-      <h3 class="ai-card-title">Alerts that <span class="mark-hl">triage themselves</span></h3>
-      <p class="ai-card-body">Related alerts cluster into one incident, deduplicated, with a suggested root cause attached. The inbox stays readable at 3am.</p>
+<section class="cs-section aic" id="ch-ai">
+  <div class="aic-grid" id="aic-gigaspaces">
+    <div class="aic-head">
+    <div class="eyebrow">
+      <div class="eyebrow-rule"></div>
+      <span class="eyebrow-text">If I built it today</span>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">Ask the <span class="mark-hl">pipeline</span></h3>
-      <p class="ai-card-body">Natural language over event logs: 'why did pipeline X slow down at 2am?' — answered with the graph that proves it.</p>
+    <div class="phase-head">
+      <span class="decision-num">AI</span>
+      <h2 class="phase-title">Three languages, one translator</h2>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">Anomaly <span class="mark-hl">before alarm</span></h3>
-      <p class="ai-card-body">Models flag drifting metrics before thresholds fire. The executive's traffic light turns yellow before it turns red.</p>
+    <p class="phase-body">The platform shipped before the AI era. Today, the three languages would get a fourth speaker — AI inside the monitoring, not bolted above it.</p>
     </div>
-    <div class="ai-card">
-      <h3 class="ai-card-title">Runbooks that <span class="mark-hl">write themselves</span></h3>
-      <p class="ai-card-body">Every resolved incident drafts its own fix documentation. The next engineer starts from the answer, not the search bar.</p>
+    <div class="ideas" aria-label="GigaSpaces ideas">
+      <div class="idea-item">
+        <button class="idea" type="button" id="gg-t0" aria-controls="gg-p0" aria-expanded="true"><span class="prog"><i></i></span><span class="idea-n">01</span><span class="idea-t">Alerts that <mark>triage themselves</mark></span></button>
+        <div class="idea-panel open" id="gg-p0"><div><p>Related alerts collapse into one incident with a likely cause. The inbox stays readable at 3am.</p></div></div>
+      </div>
+      <div class="idea-item">
+        <button class="idea" type="button" id="gg-t2" aria-controls="gg-p2" aria-expanded="false"><span class="prog"><i></i></span><span class="idea-n">02</span><span class="idea-t">Anomaly <mark>before alarm</mark></span></button>
+        <div class="idea-panel" id="gg-p2"><div><p>Drifting metrics are flagged before a threshold fires. The traffic light turns yellow before it turns red.</p></div></div>
+      </div>
+    </div>
+    <div class="stage">
+      <figure class="print">
+        <span class="sticker"><i></i>Concept · not shipped</span>
+        <div class="scenes">
+  
+          <!-- 01 triage -->
+          <div class="scene on">
+            <div class="ui gg" id="gg">
+              <div class="gg-top">
+                <span class="gg-title">Alerts</span><span class="gg-time">prod · 02:11–02:12</span>
+                <div class="gg-switch" role="tablist" aria-label="Alert view" id="ggSwitch">
+                  <button type="button" role="tab" data-v="raw" aria-selected="false">Raw <b>14</b></button>
+                  <button type="button" role="tab" data-v="tri" aria-selected="true">Triaged <b>2</b></button>
+                </div>
+              </div>
+              <div class="gg-body">
+                <div class="gg-inc" id="ggInc"><div><div class="gg-inc-in">
+                  <div class="gg-inc-h"><span class="gg-pill">Incident</span><span class="gg-count">13 alerts · started 02:11:04</span>
+                    <h3>Memory pressure on node xap-03 is cascading downstream</h3></div>
+                  <ol class="gg-chain">
+                    <li><span>Long GC pauses on <b>xap-03</b> (1.8 s, heap at 94%)</span></li>
+                    <li><span>Partition 7 of <b>orders-space</b> lost its primary and failed over</span></li>
+                    <li><span>Ingest lag climbed to 51,700 and API p99 to 1.1 s while it rebalanced</span></li>
+                  </ol>
+                  <div class="gg-conf"><b>Likely cause.</b> Timing and topology agree: every alert sits downstream of xap-03 and started within 90 s.</div>
+                  <div class="gg-acts"><button class="primary" type="button" id="ggRun">Open draft runbook</button><button type="button" id="ggSplit">Not one incident</button></div>
+                </div></div></div>
+                <p class="gg-other-l" id="ggOtherL">Not related, kept on its own</p>
+                <ol class="gg-list" id="ggList"></ol>
+              </div>
+            </div>
+          </div>
+  
+          <!-- 03 anomaly before alarm -->
+          <div class="scene">
+            <div class="ui ggn" id="ggn">
+              <div class="gg-top"><span class="gg-title">Executive view</span><span class="gg-time">orders platform · today 15:00</span></div>
+              <div class="ggn-body">
+                <div class="ggn-lights">
+                  <div class="ggn-light"><i></i><span>Ingest</span><small>Healthy</small></div>
+                  <div class="ggn-light"><i id="ggnDot"></i><span>Spaces</span><small id="ggnLs">Healthy</small></div>
+                  <div class="ggn-light"><i></i><span>API</span><small>Healthy</small></div>
+                </div>
+                <div class="ggn-chart" id="ggnChart">
+                  <div class="ggn-ch"><b>xap-05 · heap used</b><span class="ui-mute">now 71% · no alert has fired</span></div>
+                  <div id="ggnSvg"></div>
+                </div>
+                <div class="collapse ggn-call" id="ggnCall"><div><div class="ggn-call-in" id="ggnCallIn">
+                  <p><b>Drifting, not alarming yet.</b> Heap on xap-05 has grown about 4% an hour since the 13:00 deploy. At this rate it crosses the 85% threshold around 18:30, somewhere between 17:50 and 19:40.</p>
+                  <p id="ggnWhyT" hidden>Driving it: the new cache eviction setting in v4.13 keeps about 3× more entries on xap-05 than on its peers.</p>
+                  <div class="gg-acts"><button class="primary" type="button" id="ggnWhy">What's driving it</button><button type="button" id="ggnMute">It's expected</button></div>
+                </div></div></div>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </figure>
+      <div class="ctl"><span class="state" data-state>Playing both · tap to take over</span><button class="replay" type="button">Play all</button></div>
     </div>
   </div>
 </section>
