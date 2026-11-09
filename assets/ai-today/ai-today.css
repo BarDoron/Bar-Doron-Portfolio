@@ -592,7 +592,7 @@
   .aic .ideas, .aic .print, .aic .ctl { display: none; }
   .aic .stage { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .aic .stack { display: grid; gap: 48px; min-width: 0; }
-  .aic .st-item { display: grid; gap: 26px; min-width: 0; }
+  .aic .st-item { display: grid; gap: 40px; min-width: 0; }
   .aic .st-n { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; font: 600 12px/1 var(--fm); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
   .aic .st-n b { font-weight: 600; color: var(--ink); }
   .aic .st-tag { display: inline-flex; align-items: center; gap: 7px; }
