@@ -301,7 +301,8 @@
     // phones: the ideas stack, each with its own line and its own print (the scenes move into it)
     const scEl = $('.scenes', root);
     const stack = document.createElement('div'); stack.className = 'stack';
-    stack.innerHTML = tabs.map((t, i) => '<div class="st-item"><div class="st-copy"><p class="st-n"><span class="st-tag"><i></i>Concept · not shipped</span></p><p class="st-t">' + $('.idea-t', t).innerHTML + '</p><p class="st-d">' + $('p', panels[i]).textContent + '</p></div><div class="st-print"></div></div>').join('');
+    const stkEl = $('.sticker', root), stk = stkEl ? stkEl.outerHTML : '';   // the same "concept" sticker, on each print
+    stack.innerHTML = tabs.map((t, i) => '<div class="st-item"><div class="st-copy"><p class="st-t">' + $('.idea-t', t).innerHTML + '</p><p class="st-d">' + $('p', panels[i]).textContent + '</p></div><div class="st-print">' + stk + '</div></div>').join('');
     stage.insertBefore(stack, print);
     const slots = $$('.st-print', stack);
     const place = () => { const p = phone.matches; els.forEach((e, k) => { const home = p ? slots[k] : scEl; if (e.parentElement !== home) home.appendChild(e); if (p) e.inert = false; }); };

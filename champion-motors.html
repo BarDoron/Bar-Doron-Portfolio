@@ -1340,8 +1340,8 @@
       .ui-loupe[style*="left:5"], .ui-loupe[style*="left:6"], .ui-loupe[style*="left:7"], .ui-loupe[style*="left: 5"], .ui-loupe[style*="left: 6"], .ui-loupe[style*="left: 7"] { margin-left: -16px; }
     }
 </style>
-  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=mw9x1108" />
-  <script src="assets/ai-today/ai-today.js?v=mw9x1108" defer></script>
+  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=mw9x1115" />
+  <script src="assets/ai-today/ai-today.js?v=mw9x1115" defer></script>
 <style id="type-floor">
   /* headings that wrap keep heading leading, and break into balanced lines */
   .phase-title, .next-title { line-height: 1.15; text-wrap: balance; }
@@ -1349,6 +1349,11 @@
   @media (max-width: 880px) {
     .eyebrow-text, .cs-meta-item, .cs-back, .stat-cell-lbl, .stat-cell-sub, .result-stat-lbl, .result-stat-desc,
     .next-label, .foot-line, .pod-label, .pod-time, .ps-tab, .btn-black, .clip-line { font-size: 12px; }
+    /* the podcast pill stays inside the screen at the bigger label */
+    .pod-row, .hero-pod { max-width: 100%; min-width: 0; }
+    .pod-label { letter-spacing: .1em; white-space: normal; }
+    .foot-line { display: block; letter-spacing: .1em; white-space: normal; text-align: center; text-wrap: balance; }
+    .foot-line svg { display: inline-block; vertical-align: -3px; margin-left: 4px; }
   }
 </style>
 </head>
