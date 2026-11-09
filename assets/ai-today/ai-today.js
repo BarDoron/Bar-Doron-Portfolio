@@ -298,9 +298,31 @@
     const stage = $('.stage', root), state = $('[data-state]', root), print = $('.print', root);
     const s = seq(); let idx = 0, auto = !reduce, once = false, played = false;
     const phone = matchMedia('(max-width: 880px)');
-    const mt = document.createElement('div'); mt.className = 'mtabs'; mt.setAttribute('role', 'group'); mt.setAttribute('aria-label', 'Ideas');
-    const mtabs = tabs.map((t, i) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'mtab'; b.innerHTML = '<span>' + $('.idea-n', t).textContent + '</span>' + $('.idea-t', t).textContent; b.addEventListener('click', () => pick(i)); mt.appendChild(b); return b; });
-    stage.insertBefore(mt, print);
+    // phones: the ideas stack, each with its own line and its own print (the scenes move into it)
+    const scEl = $('.scenes', root);
+    const stack = document.createElement('div'); stack.className = 'stack';
+    stack.innerHTML = tabs.map((t, i) => '<div class="st-item"><div class="st-copy"><p class="st-n"><span class="st-tag"><i></i>Concept · not shipped</span></p><p class="st-t">' + $('.idea-t', t).innerHTML + '</p><p class="st-d">' + $('p', panels[i]).textContent + '</p></div><div class="st-print"></div></div>').join('');
+    stage.insertBefore(stack, print);
+    const slots = $$('.st-print', stack);
+    const place = () => { const p = phone.matches; els.forEach((e, k) => { const home = p ? slots[k] : scEl; if (e.parentElement !== home) home.appendChild(e); if (p) e.inert = false; }); };
+    place();
+    // full-bleed prints, whatever the section's side padding is
+    const geo = () => { const vw = document.documentElement.clientWidth, cw = stage.clientWidth; root.style.setProperty('--vw', vw + 'px'); root.style.setProperty('--bl', Math.max(0, (vw - cw) / 2) + 'px'); };
+    geo(); addEventListener('resize', geo);
+    // phones: each print plays on its own; touching one takes it over
+    const ps = scenes.map(() => seq()), busy = scenes.map(() => false), mine = scenes.map(() => false), armed = scenes.map(() => true);
+    const stopOne = (k) => { ps[k].stop(); scenes[k].s.stop(); busy[k] = false; };
+    const playOne = (k) => { if (busy[k] || mine[k] || reduce) return; stopOne(k); scenes[k].rest(); busy[k] = true; const w = ps[k].start(); scenes[k].play(w).then(() => { busy[k] = false; settle(k); }, () => {}); };
+    // while a print plays it keeps its tallest height (the page never jumps); once it is done it eases back to what it needs
+    const mh = scenes.map(() => 0);
+    const settle = (k) => {
+      const sl = slots[k]; if (!phone.matches || !mh[k]) return;
+      const from = sl.offsetHeight; sl.style.minHeight = ''; const to = sl.offsetHeight;
+      if (from - to < 2) { sl.style.minHeight = from + 'px'; return; }
+      mh[k] = to; sl.style.minHeight = to + 'px';
+      if (!reduce && sl.animate) sl.animate([{ height: from + 'px' }, { height: to + 'px' }], { duration: 500, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+    };
+    const takeOne = (k) => { stopOne(k); mine[k] = true; };
     const stopAll = () => { s.stop(); scenes.forEach(x => x.s.stop()); };
     const prog = (i, ms) => tabs.forEach((t, k) => {
       const b = $('.prog i', t); b.style.transition = 'none'; b.style.transform = (k === i && ms === 'full') ? 'scaleX(1)' : 'scaleX(0)';
@@ -311,7 +333,7 @@
       tabs.forEach((t, k) => { t.setAttribute('aria-expanded', String(k === i)); t.parentElement.classList.toggle('on', k === i); });
       panels.forEach((p, k) => p.classList.toggle('open', k === i));
       els.forEach((e, k) => { e.classList.toggle('on', k === i); e.inert = k !== i; });
-      mtabs.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
+      if (phone.matches) els.forEach(e => { e.inert = false; });
     };
     const label = () => { stage.classList.toggle('is-manual', !auto); state.textContent = reduce ? 'Reduced motion · pick an idea' : !auto ? 'Your turn · try the controls' : played ? 'Pick the other idea to see it' : phone.matches ? 'Playing · tap to take over' : 'Playing both · tap to take over'; };
     const run = async () => {
@@ -325,11 +347,20 @@
       if (reduce) return;
       once = true; const w = s.start(); scenes[i].play(w).then(() => { once = false; }, () => {});
     };
-    scenes.forEach(x => { x.rest(); x.bind(take); });
+    scenes.forEach((x, k) => { x.rest(); x.bind(() => (phone.matches ? takeOne(k) : take())); });
     show(0); label();
     // phones: the print keeps the tallest height it has needed, so the page under it never jumps
-    const scEl = $('.scenes', root); let maxH = 0;
-    if (window.ResizeObserver) new ResizeObserver(() => { if (!phone.matches) { if (maxH) { scEl.style.minHeight = ''; maxH = 0; } return; } const h = scEl.offsetHeight; if (h > maxH + 1) { maxH = h; scEl.style.minHeight = h + 'px'; } }).observe(scEl);
+    if (window.ResizeObserver) slots.forEach((sl, k) => { new ResizeObserver(() => { if (!phone.matches) { if (mh[k]) { sl.style.minHeight = ''; mh[k] = 0; } return; } const h = sl.offsetHeight; if (h > mh[k] + 1) { mh[k] = h; sl.style.minHeight = h + 'px'; } }).observe(sl); });
+    slots.forEach((sl, k) => sl.addEventListener('click', (e) => { if (busy[k]) { const btn = e.target.closest('button, [contenteditable="true"]'); takeOne(k); if (!btn) scenes[k].rest(); } }, true));
+    phone.addEventListener('change', () => { stopAll(); scenes.forEach((x, k) => { stopOne(k); x.rest(); armed[k] = true; }); place(); show(idx); });
+    if (!reduce && window.IntersectionObserver) {
+      const io = new IntersectionObserver((es) => es.forEach(e => {
+        const k = slots.indexOf(e.target); if (!phone.matches || k < 0) return;
+        if (e.intersectionRatio >= 0.35) { if (armed[k]) { armed[k] = false; playOne(k); } }
+        else if (!e.isIntersecting) { if (!mine[k]) { stopOne(k); scenes[k].rest(); } armed[k] = true; }
+      }), { threshold: [0, 0.35] });
+      slots.forEach(sl => io.observe(sl));
+    }
     tabs.forEach((t, i) => t.addEventListener('click', () => { pick(i); }));
     tabs.forEach((t, i) => t.parentElement.addEventListener('click', (e) => { if (!e.target.closest('.idea')) pick(i); }));
     $('.ideas', root).addEventListener('keydown', (e) => {
@@ -339,7 +370,7 @@
     print.addEventListener('click', (e) => { if (auto || once) { const btn = e.target.closest('button, [contenteditable="true"]'); take(); if (!btn) scenes[idx].rest(); } }, true);
     $('.replay', root).addEventListener('click', () => { if (reduce) return; auto = true; label(); run(); });
     if (reduce) return;
-    new IntersectionObserver(([e]) => { if (!auto || (played && e.isIntersecting)) return; if (e.isIntersecting) run(); else { stopAll(); prog(idx, 0); scenes[idx].rest(); } }, { threshold: 0.35 }).observe(print);
+    new IntersectionObserver(([e]) => { if (phone.matches || !auto || (played && e.isIntersecting)) return; if (e.isIntersecting) run(); else { stopAll(); prog(idx, 0); scenes[idx].rest(); } }, { threshold: 0.35 }).observe(print);
   };
 
   const init = (id, mods, durs) => { if (document.getElementById(id)) card(id, mods.map(m => m()), durs); };
