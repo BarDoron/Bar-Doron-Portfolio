@@ -2157,7 +2157,8 @@
       #about .nb-pins-page .nb-stampfield { zoom: 0.5; }
     }
 </style>
-<script src="assets/track.js?v=2" async></script>
+<script src="assets/track.js?v=5" async></script>
+<link rel="stylesheet" href="assets/claude-work/claude-work.css?v=38" />
 </head>
 <body>
 <a class="skip-link" href="#work">Skip to content</a>
@@ -2213,6 +2214,7 @@
   <a href="#" class="nav-logo"><img class="nav-avatar" src="assets/about-me/me.webp" alt="Bar Doron" />Bar Doron</a>
   <ul class="nav-links">
     <li><a href="#work">Work</a></li>
+    <li><a href="#claude-work">AI</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="assets/bar-doron-cv-2026-09.pdf" download>CV</a></li>
@@ -2234,6 +2236,7 @@
 <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
   <div class="mm-links">
     <a href="#work">Work</a>
+    <a href="#claude-work">AI</a>
     <a href="#about">About</a>
     <a href="#contact">Contact</a>
     <a href="assets/bar-doron-cv-2026-09.pdf" download>CV</a>
@@ -2498,6 +2501,67 @@
   </div>
 </div>
 
+<!-- 05 — EVERYDAY WORK WITH CLAUDE -->
+<section id="claude-work" aria-labelledby="cw-h">
+  <div class="cw-wrap">
+    <div class="eyebrow">
+      <div class="eyebrow-rule"></div>
+      <span class="eyebrow-text">05 – Working with AI</span>
+    </div>
+    <div class="cw-head">
+      <div class="cw-intro">
+        <h2 class="cw-h" id="cw-h">A few things I built to make <span class="mark-hl" style="--mark:rgba(217,104,69,.32)">everyday work</span> faster.</h2>
+        <p class="cw-sub">AI is part of <strong>almost every step</strong> of my work. When a step is still slow, I build the tool for it. Here are a few.</p>
+      </div>
+      <div class="cw-nav" role="group" aria-label="Scroll the examples">
+        <button type="button" class="cw-round cw-prev" aria-label="Previous" disabled>←</button>
+        <button type="button" class="cw-round cw-next" aria-label="Next">→</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cw-strip">
+    <ul class="cw-track" aria-label="Tools I built with AI">
+      <li class="cw-card">
+        <button type="button" class="cw-frame cw-shot" data-shots="qa" aria-label="Open the QA board full size">
+          <img src="assets/claude-work/qa-card.webp" width="1280" height="603" alt="The QA board the skill filled with bugs, each with priority, type and screenshots" decoding="async" /><span class="cw-zoom" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <h3>QA against Figma</h3>
+        <p>Compares the live site to Figma and opens every gap as a bug. <strong>Hours of QA, automated.</strong></p>
+      </li>
+      <li class="cw-card">
+        <button type="button" class="cw-frame cw-shot cw-live" data-shots="rail" aria-label="Watch the full rail prototype walkthrough">
+          <video muted loop playsinline preload="none" poster="assets/claude-work/rail-poster.webp" data-src="assets/claude-work/rail.mp4" aria-hidden="true"></video>
+          <span class="cw-zoom cw-play" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span>
+        </button>
+        <h3>Behavior prototypes</h3>
+        <p>Live, working artifacts that show how a screen behaves. <strong>Figma can't show that.</strong></p>
+      </li>
+      <li class="cw-card">
+        <button type="button" class="cw-frame cw-shot" data-shots="versions" aria-label="Open the version history full size">
+          <img src="assets/claude-work/versions-card.webp" width="1280" height="664" alt="Before and after of one screen, from the version history page" decoding="async" /><span class="cw-zoom" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <h3>Version history</h3>
+        <p>Every client change on one before-and-after page, archived in Figma. <strong>No tracking by hand.</strong></p>
+      </li>
+      <li class="cw-card cw-card-more">
+        <div class="cw-frame cw-frame-more" aria-hidden="true">
+          <span class="cw-working"><svg class="cw-spark" viewBox="0 0 40 40"><g fill="currentColor"><rect x="18" y="2" width="4" height="15" rx="2"/><rect x="18" y="23" width="4" height="15" rx="2"/><rect x="2" y="18" width="15" height="4" rx="2"/><rect x="23" y="18" width="15" height="4" rx="2"/><rect x="18" y="2" width="4" height="15" rx="2" transform="rotate(45 20 20)"/><rect x="18" y="23" width="4" height="15" rx="2" transform="rotate(45 20 20)"/><rect x="2" y="18" width="15" height="4" rx="2" transform="rotate(45 20 20)"/><rect x="23" y="18" width="15" height="4" rx="2" transform="rotate(45 20 20)"/></g></svg><span class="cw-status">Building the next one…</span></span>
+        </div>
+        <h3>And more</h3>
+        <p>Smaller helpers come and go with every project. <strong>The list keeps growing.</strong></p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="cw-pop" id="cwPop" role="dialog" aria-modal="true" aria-label="Full size screenshot" hidden>
+    <div class="cw-pop-card">
+      <button type="button" class="cw-round cw-x" aria-label="Close">×</button>
+      <figure class="cw-pop-media"></figure>
+    </div>
+  </div>
+</section>
+
 <!-- LINK PREVIEW CARD -->
 <div id="lp-card" class="lp-card" aria-hidden="true">
   <div class="lp-snap"><img loading="lazy" id="lp-img" src="" alt="" /></div>
@@ -2512,7 +2576,7 @@
 <div class="about-detail">
   <div class="about-eyebrow">
     <div class="about-eyebrow-rule"></div>
-    <span class="about-eyebrow-text">04 – About me</span>
+    <span class="about-eyebrow-text">06 – About me</span>
   </div>
   <div class="about-inner">
 
@@ -2975,6 +3039,7 @@ function syncNavBg() {
 // ── Nav active link — scroll-driven ──────────────────────────────────────────
 const NAV_MAP = [
   { href: '#work',    el: '#work'    },
+  { href: '#claude-work', el: '#claude-work' },
   { href: '#about',   el: '#about'   },
   { href: '#contact', el: '#contact' },
 ];
@@ -3258,6 +3323,89 @@ window.addEventListener('pageshow', (e) => {
   document.body.classList.remove('on-link', 'cur-down');
   if (window.ScrollTrigger) ScrollTrigger.refresh();
 });
+</script>
+<script>
+/* 05 – AI section: a strip of sticker cards that scrolls sideways (native scroll + snap; arrows scroll one card).
+   The rail recording plays only while it's on screen. Screenshots and the full rail walkthrough open in a sticker card. */
+(function () {
+  var sec = document.getElementById('claude-work'); if (!sec) return;
+  var track = sec.querySelector('.cw-track'), cards = [].slice.call(sec.querySelectorAll('.cw-card')),
+      prev = sec.querySelector('.cw-prev'), next = sec.querySelector('.cw-next'),
+      video = sec.querySelector('.cw-live video'),
+      still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // arrows: move by one card, and grey out at either end
+  // counts cards, not pixels, so quick double clicks land two cards over instead of fighting the snap
+  var target = null, settle = 0;
+  function step() { return cards[1].offsetLeft - cards[0].offsetLeft; }
+  function go(d) {
+    var max = track.scrollWidth - track.clientWidth, at = target === null ? Math.round(track.scrollLeft / step()) : target,
+        last = Math.ceil(max / step());
+    target = Math.max(0, Math.min(last, at + d));
+    track.scrollTo({ left: Math.min(max, target * step()), behavior: still ? 'auto' : 'smooth' });
+  }
+  prev.addEventListener('click', function () { go(-1); });
+  next.addEventListener('click', function () { go(1); });
+  function ends() {
+    var max = track.scrollWidth - track.clientWidth - 2;
+    prev.disabled = track.scrollLeft <= 2; next.disabled = track.scrollLeft >= max;
+    // an arrow that switches off under the pointer gets no mouseleave, so drop the hand cursor here
+    if ((prev.disabled && prev.matches(':hover')) || (next.disabled && next.matches(':hover'))) document.body.classList.remove('on-link');
+    clearTimeout(settle); settle = setTimeout(function () { target = null; }, 160);
+  }
+  track.addEventListener('scroll', ends, { passive: true }); addEventListener('resize', ends); ends();
+  // the rail prototype recording: loads when it comes near, plays only while on screen (not at all with reduced motion)
+  if (!still) {
+    var playing = false;
+    var vio = new IntersectionObserver(function (es) {
+      var on = es[0].intersectionRatio >= .35;
+      if (on && !video.src) { video.src = video.dataset.src; }
+      if (on && !playing) { playing = true; var p = video.play(); if (p && p.catch) p.catch(function () { playing = false; }); }
+      else if (!on && playing) { playing = false; video.pause(); }
+    }, { threshold: [0, .35, 1] });
+    vio.observe(video);
+  }
+
+  // "and more": the loader's status line keeps changing, like Claude at work
+  var status = sec.querySelector('.cw-status'), WORDS = ['Building the next one…', 'Tinkering…', 'Automating a step…', 'Prototyping…', 'Testing an idea…'], w = 0;
+  if (status && !still) setInterval(function () { w = (w + 1) % WORDS.length; status.textContent = WORDS[w]; }, 2600);
+
+  // full-size screenshot in a sticker card (a plain fixed layer, so the site's sticker cursor stays above it)
+  var FULL = { qa: ['assets/claude-work/qa-full.webp', 'The team board after one run of the QA skill'],
+               versions: ['assets/claude-work/versions-full.webp', 'Before and after of one screen, from the version history page'],
+               rail: ['assets/claude-work/rail-full.mp4', 'Walkthrough of the rail search prototype', 'assets/claude-work/rail-full-poster.webp'] };
+  var pop = document.getElementById('cwPop');
+  document.body.appendChild(pop);   // out of the section's stacking context, so it covers the nav too
+  var media = pop.querySelector('.cw-pop-media'), opener = null;
+  pop.querySelectorAll('button').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { document.body.classList.add('on-link'); });
+    el.addEventListener('mouseleave', function () { document.body.classList.remove('on-link'); });
+  });
+  function open(key) {
+    var f = FULL[key]; if (!f) return;
+    opener = document.activeElement;
+    media.innerHTML = /\.mp4$/.test(f[0])
+      ? '<video src="' + f[0] + '" poster="' + f[2] + '" controls autoplay muted playsinline aria-label="' + f[1] + '"></video>'
+      : '<img src="' + f[0] + '" alt="' + f[1] + '" />';
+    if (video && !video.paused) video.pause();
+    pop.hidden = false; document.documentElement.classList.add('cw-lock');
+    requestAnimationFrame(function () { pop.classList.add('in'); });
+    pop.querySelector('.cw-x').focus({ preventScroll: true });
+  }
+  function close() {
+    pop.classList.remove('in'); pop.hidden = true; media.innerHTML = '';
+    if (video && video.src && playing) video.play();
+    document.documentElement.classList.remove('cw-lock'); document.body.classList.remove('on-link');
+    if (opener && opener.focus) opener.focus({ preventScroll: true });
+  }
+  sec.querySelectorAll('.cw-shot').forEach(function (b) { b.addEventListener('click', function () { open(b.dataset.shots); }); });
+  pop.querySelector('.cw-x').addEventListener('click', close);
+  pop.addEventListener('click', function (e) { if (e.target === pop || e.target === pop.firstElementChild) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (pop.hidden) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'Tab') { e.preventDefault(); pop.querySelector('.cw-x').focus(); }   // only one control in the card
+  });
+})();
 </script>
 </body>
 </html>

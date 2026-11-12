@@ -1,0 +1,164 @@
+/* 05 – Everyday work with AI (home page). Scoped under #claude-work, keyframes prefixed cw-.
+   A strip of sticker cards that scrolls sideways. Two show real screenshots (people blurred) that open full
+   size in a sticker card; the third is a screen recording of the rail prototype that links to the live one. */
+#claude-work, .cw-pop {
+  --cw-card: #FDFCFA;
+  --cw-ui: #FFFFFF;
+  --cw-ui-2: #EFEBE6;
+  --cw-ui-3: #DDD7D0;
+  --cw-red: #D64545;
+  --cw-orange: #E39A36;
+  --cw-green: #5E9E3E;
+  --cw-plate: #F6D530;
+}
+#claude-work {
+  background: var(--cream);
+  padding: 112px 48px 104px;
+  position: relative;
+  z-index: 2;
+}
+[data-theme="dark"] #claude-work, [data-theme="dark"] .cw-pop {
+  --cw-card: #1B1916;
+  --cw-ui: #24211D;
+  --cw-ui-2: #2E2A25;
+  --cw-ui-3: #3D3832;
+  --cw-red: #E46A5E;
+  --cw-orange: #EDAE55;
+  --cw-green: #7CBA5A;
+}
+
+.cw-wrap { max-width: 1360px; margin: 0 auto; }
+
+/* heading on the left, arrows on the right */
+.cw-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; margin-bottom: 52px; }
+.cw-intro { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.cw-h {
+  margin: 0; max-width: 17ch;
+  font-family: var(--fd); font-weight: 800; font-variation-settings: 'opsz' 48, 'wght' 800;
+  font-size: clamp(36px, 4.5vw, 64px); line-height: .95; letter-spacing: -.03em;   /* same as the project headings (.proj-heading) */
+  color: var(--ink); text-wrap: balance; text-transform: none;
+}
+.cw-sub, .cw-card p {   /* same running text as the project cards (.proj-desc) */
+  margin: 0; font-family: var(--fm); font-size: 11px; font-weight: 400; line-height: 1.9; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-dim); text-wrap: pretty;
+}
+.cw-sub { max-width: 440px; }
+.cw-sub strong, .cw-card p strong { font-weight: 700; color: var(--ink); }
+.cw-nav { display: flex; gap: 14px; flex: none; padding: 0 6px 4px 0; }
+
+/* the strip: starts in line with the heading, runs to the window's edge so the next card peeks in */
+.cw-strip { margin: 0 -48px; }
+.cw-track {
+  --cw-in: max(48px, calc((100% - 1360px) / 2));
+  display: flex; gap: 40px; margin: 0; padding: 16px 48px 36px var(--cw-in); list-style: none;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-left: var(--cw-in);
+  scrollbar-width: none;
+}
+.cw-track::-webkit-scrollbar { display: none; }
+.cw-card { flex: 0 0 clamp(300px, 36vw, 560px); min-width: 0; scroll-snap-align: start; }
+.cw-card h3 { margin: 28px 0 8px; font-family: var(--fd); font-weight: 800; font-variation-settings: 'opsz' 32, 'wght' 800; font-size: clamp(22px, 1.8vw, 26px); line-height: 1.05; letter-spacing: -.02em; text-transform: none; color: var(--ink); }
+/* captions run the width of the picture: two lines on desktop, three on phones, the same for every card */
+.cw-card p { min-height: calc(2 * 1.9em); }
+
+/* each picture is a sticker: ink outline, white ring, soft shadow; it tips a little on hover */
+.cw-frame {
+  position: relative; display: block; width: 100%; aspect-ratio: 2.1 / 1;   /* the screenshots' own shape: fit to width, any extra is cut from the bottom */ max-width: 100%; padding: 0; overflow: hidden; isolation: isolate;
+  border-radius: 20px; border: 2px solid #18160F; background: var(--cw-ui-2);
+  box-shadow: 0 0 0 5px #FFFFFF, 0 16px 34px -14px rgba(24,22,15,.32), 0 3px 8px rgba(24,22,15,.08);
+  transition: transform .5s cubic-bezier(.34,1.56,.64,1), box-shadow .4s;
+}
+/* hover tilt only with a real pointer: on touch screens :hover sticks after a tap or swipe */
+@media (hover: hover) {
+  .cw-card:nth-child(odd):hover .cw-frame { transform: rotate(-1.2deg) translateY(-4px); }
+  .cw-card:nth-child(even):hover .cw-frame { transform: rotate(1.2deg) translateY(-4px); }
+  .cw-card:hover .cw-frame { box-shadow: 0 0 0 5px #FFFFFF, 0 22px 40px -14px rgba(24,22,15,.38), 0 3px 8px rgba(24,22,15,.08); }
+}
+[data-theme="dark"] .cw-frame { box-shadow: 0 0 0 5px #FFFFFF, 0 16px 36px -12px rgba(0,0,0,.6); }
+.cw-shot { cursor: zoom-in; }
+/* full width, from the top; click for full size */
+.cw-frame img, .cw-frame video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+/* the still sits under the loop, so the frame is never blank while the video loads (iOS drops the poster then) */
+.cw-live { background: #fff url(rail-poster.webp) center top / cover no-repeat; }
+.cw-live:focus-visible { outline: 3px solid var(--accent); outline-offset: 7px; }
+.cw-play svg { width: 13px; height: 13px; margin-left: 2px; }
+.cw-shot:focus-visible { outline: 3px solid var(--accent); outline-offset: 7px; }
+.cw-zoom { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2px solid #18160F; background: #FDFCFA; color: #18160F; box-shadow: 0 0 0 3px #FFFFFF, 0 3px 8px rgba(24,22,15,.2); transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+.cw-zoom svg { width: 14px; height: 14px; }
+@media (hover: hover) { .cw-shot:hover .cw-zoom { transform: rotate(-10deg) scale(1.12); } }
+/* the last card: there's more where these came from */
+.cw-frame-more { display: grid; place-items: center; border: 2px dashed var(--border-strong); background: transparent; box-shadow: none; }
+.cw-card-more:hover .cw-frame { box-shadow: none; }
+/* always at work: a spinning spark and a shimmering status line, like Claude while it builds */
+.cw-working { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.cw-spark { width: 46px; height: 46px; color: var(--accent); animation: cw-spin 2.4s cubic-bezier(.5,.1,.5,.9) infinite; }
+@keyframes cw-spin { 0% { transform: rotate(0) scale(1); } 50% { transform: rotate(180deg) scale(.78); } 100% { transform: rotate(360deg) scale(1); } }
+.cw-status {
+  font-family: var(--fm); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  background: linear-gradient(90deg, var(--ink-faint) 0%, var(--ink-faint) 35%, var(--ink) 50%, var(--ink-faint) 65%, var(--ink-faint) 100%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: cw-shimmer 2.2s linear infinite;
+}
+@keyframes cw-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+
+
+
+
+/* full-size screenshot: a sticker card over the page. A plain fixed layer (not a top-layer <dialog>) so the
+   site's sticker cursor (z 9999) stays above it. */
+html.cw-lock { overflow: hidden; }
+.cw-pop[hidden] { display: none; }   /* the site has no global [hidden] rule, and display:grid would win */
+.cw-pop { position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; padding: 40px 24px; overflow-y: auto; background: rgba(17,16,14,0); transition: background .3s; }
+.cw-pop.in { background: rgba(17,16,14,.62); }
+.cw-pop-card {
+  position: relative; width: min(1280px, 100%); margin: auto; padding: 14px;
+  border-radius: 30px; border: 2px solid #18160F; background: var(--cw-card);
+  box-shadow: 0 0 0 7px #FFFFFF, 0 40px 90px -20px rgba(0,0,0,.55), 0 10px 24px rgba(0,0,0,.18);
+  opacity: 0; transform: translateY(24px) rotate(-1.5deg) scale(.97);
+  transition: opacity .3s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
+}
+.cw-pop.in .cw-pop-card { opacity: 1; transform: none; }
+.cw-pop-media { margin: 0; overflow: hidden; border-radius: 18px; border: 1px solid var(--border); }
+.cw-pop-media img, .cw-pop-media video { display: block; width: 100%; height: auto; }
+.cw-pop-media video { background: #fff; }
+.cw-round {
+  flex: none; display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border-radius: 50%;
+  border: 2px solid #18160F; background: #FDFCFA; color: #18160F; font-size: 19px; line-height: 1; cursor: pointer;
+  box-shadow: 0 0 0 4px #FFFFFF, 0 3px 8px rgba(24,22,15,.18);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, background .2s;
+}
+@media (hover: hover) { .cw-round:hover { transform: rotate(-8deg) scale(1.08); box-shadow: 0 0 0 4px #FFFFFF, 0 7px 16px rgba(24,22,15,.24); } }
+.cw-round:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+/* an arrow at the end of the strip is off: faded, and hover does nothing (no tilt, no hand cursor) */
+.cw-round:disabled, .cw-round:disabled:hover { opacity: .3; cursor: default; transform: none; box-shadow: 0 0 0 4px #FFFFFF; pointer-events: none; }
+.cw-x { position: absolute; top: -18px; right: -18px; z-index: 2; background: var(--accent); color: #fff; font-size: 24px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-pop-card, .cw-frame, .cw-round { transition: none; }
+  .cw-spark, .cw-status { animation: none; }
+  .cw-status { color: var(--ink-dim); background: none; }
+}
+
+/* phones and narrow tablets: cards almost full width, swipe sideways */
+@media (max-width: 880px) {
+  #claude-work { padding: 88px 20px 96px; }
+  .cw-head { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 32px; }
+  .cw-sub, .cw-card p { font-size: 12px; letter-spacing: .08em; }
+  .cw-card p { min-height: calc(3 * 1.9em); }
+  .cw-status { font-size: 12px; }
+  .cw-nav .cw-round { width: 42px; height: 42px; font-size: 17px; }
+  .cw-strip { margin: 0 -20px; }
+  .cw-track { --cw-in: 20px; gap: 20px; padding-right: 20px; }
+  .cw-card { flex-basis: 86%; }
+  .cw-frame { border-radius: 16px; }
+  .cw-card h3 { margin-top: 22px; font-size: 22px; }
+  .cw-pop { padding: 28px 16px; }
+  .cw-pop-card { padding: 8px; border-radius: 20px; }
+  .cw-pop-media { border-radius: 13px; }
+  .cw-x { top: -14px; right: -10px; }
+}
+
+/* the smallest phones: a touch wider and tighter, so the captions still fit three lines */
+@media (max-width: 360px) {
+  .cw-card { flex-basis: 90%; }
+  .cw-sub, .cw-card p { letter-spacing: .03em; }
+}

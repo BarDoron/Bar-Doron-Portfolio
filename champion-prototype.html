@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Champion Service Floor · Prototype</title>
+<meta name="description" content="Champion Motors paperless service floor — the wireframe prototype, rebuilt as working HTML. All data is fictional.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* The Champion Motors service-floor wireframe (originally Axure, 2022), rebuilt as one working page.
+   Two stations share one state: the mechanic's workstation and the floor manager's board.
+   Wireframe look on purpose: greys, black, the yellow plate, and status colors only. All data is fictional. */
+:root {
+  color-scheme: light;
+  --bg: #F3F4F6; --panel: #FFFFFF; --soft: #F1F2F4; --soft-2: #E6E8EB; --line: #E4E6E9; --line-2: #CDD1D6;
+  --ink: #16181D; --ink-2: #5B616B; --ink-3: #8E949C;
+  --dark: #23262D; --navy: #1E2A5A;
+  --plate: #F7D33A; --il: #1F4FB3; --green: #5FA83B; --green-d: #4A8A2B; --red: #D64545; --orange: #E99B2E;
+  --scrim: rgba(16,18,24,.42);
+  --sh1: 0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.08);
+  --sh2: 0 10px 28px -6px rgba(16,24,40,.16), 0 2px 6px rgba(16,24,40,.06);
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --fh: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+  --fm: 'Red Hat Mono', ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--ink); font-family: var(--fh); font-size: 14px; line-height: 1.4; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+input { font: inherit; color: inherit; }
+svg { display: block; flex: none; }
+[hidden] { display: none !important; }
+
+/* the frame around the prototype (portfolio context, English) */
+.fbar { position: relative; z-index: 30; display: flex; align-items: center; gap: 18px; height: 46px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: #18160F; color: #F2EEE9; font: 500 12px/1.3 var(--fm); letter-spacing: .06em; direction: ltr; }
+.fbar a { color: inherit; text-decoration: none; white-space: nowrap; }
+.fbar a:hover { text-decoration: underline; }
+.roles { margin-left: auto; display: flex; gap: 2px; padding: 2px; border: 1px solid rgba(242,238,233,.28); border-radius: 6px; }
+.roles button { padding: 6px 10px; border-radius: 4px; font: 600 11px/1 var(--fm); letter-spacing: .08em; text-transform: uppercase; color: rgba(242,238,233,.8); white-space: nowrap; }
+.roles button[aria-pressed="true"] { background: #F2EEE9; color: #18160F; }
+
+#stage { position: relative; height: calc(100% - 46px); overflow: hidden; }
+#app { width: 1280px; transform-origin: top right; position: absolute; top: 0; right: 0; }
+.narrow-note { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 40; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 10px; background: #18160F; color: #F2EEE9; font: 500 12px/1.5 var(--fm); direction: ltr; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.narrow-note button { margin-left: auto; padding: 6px 10px; border: 1px solid rgba(242,238,233,.4); border-radius: 6px; font-size: 11px; color: inherit; }
+
+.logo { display: inline-flex; align-items: center; padding: 3px 10px 4px; border: 1.5px solid var(--navy); border-radius: 3px 3px 14px 3px; color: var(--navy); font: 800 15px/1 var(--fh); letter-spacing: .01em; }
+
+/* ── top bars ── */
+.top { display: flex; align-items: flex-end; gap: 6px; height: 64px; padding: 0 20px; background: #EAEAEA; border-bottom: 1px solid var(--line); }
+.brand { align-self: center; margin-left: 24px; }
+.brand small { display: block; margin-top: 3px; color: var(--ink-2); font-size: 11px; }
+.ctabs { display: flex; gap: 4px; align-self: flex-end; }
+.ctab { display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 14px; border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; background: #DCDCDC; }
+.ctab.on { background: var(--panel); height: 56px; margin-bottom: -1px; }
+.iron { display: grid; place-items: center; width: 32px; height: 32px; background: #6B6B6B; color: #fff; font: 700 18px/1 var(--fh); }
+.ctab.on .iron, .mcard .iron { background: var(--dark); }
+.cno { font-size: 11px; color: var(--ink-2); line-height: 1.2; }
+.cno b { display: block; color: var(--ink); font-size: 12px; }
+.plate { display: inline-block; padding: 4px 9px; border: 1.5px solid var(--ink); border-radius: 4px; background: #C9C9C9; font: 700 13px/1 var(--fm); letter-spacing: .02em; direction: ltr; white-space: nowrap; }
+.ctab.on .plate, .plate.y { background: var(--plate); }
+.plate.big { padding: 6px 12px; font-size: 16px; border-width: 2px; }
+.dot-alert { width: 14px; height: 14px; border-radius: 50%; background: var(--red); color: #fff; font: 700 10px/14px var(--fh); text-align: center; }
+.newtab { align-self: center; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; }
+.newtab:hover, .ibtn:hover { background: rgba(0,0,0,.06); }
+.clock { margin-right: auto; align-self: center; display: flex; align-items: center; gap: 14px; color: var(--ink-2); }
+.clock b { color: var(--ink); font-size: 17px; }
+.ibtn { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; position: relative; }
+.badge-n { position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--red); color: #fff; font: 700 10px/16px var(--fh); text-align: center; }
+
+/* ── workstation ── */
+.ws { display: flex; gap: 28px; height: calc(100% - 64px); padding: 22px 24px 22px; background: var(--panel); }
+.veh { flex: none; width: 300px; display: flex; flex-direction: column; gap: 0; padding: 14px; border-radius: 16px; background: var(--soft); overflow: auto; }
+.veh-head { display: flex; justify-content: space-between; gap: 8px; padding: 2px 4px 12px; font-size: 12px; color: var(--ink-2); }
+.veh-head b { display: block; color: var(--ink); }
+.late { display: inline-flex; align-items: center; gap: 4px; }
+.flags { display: flex; gap: 4px; align-items: flex-start; }
+.flag { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: var(--ink-2); }
+.flag[data-on="false"] { opacity: .25; }
+.veh-card { padding: 12px 14px 14px; border-radius: 10px; background: var(--panel); }
+.veh-card .row { display: flex; justify-content: space-between; align-items: center; }
+.wbadge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 10px; background: var(--green); color: #fff; font-size: 11px; font-weight: 700; }
+.wbadge.no { background: #9E9E9E; }
+.keycode { display: inline-flex; align-items: center; gap: 6px; font: 700 13px/1 var(--fm); direction: ltr; }
+.car { text-align: center; padding: 12px 0 10px; }
+.mark { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 8px; border: 2.5px solid var(--ink); border-radius: 50%; font: 800 15px/1 var(--fh); letter-spacing: -.02em; direction: ltr; }
+.car h2 { margin: 0; font-size: 26px; font-weight: 800; direction: ltr; }
+.car p { margin: 2px 0 0; font-size: 17px; direction: ltr; }
+.loc { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; font-size: 12px; color: var(--ink-2); }
+.loc b { color: var(--ink); }
+.loc form { display: flex; gap: 6px; }
+.loc input { width: 150px; padding: 4px 6px; border: 1px solid var(--line-2); border-radius: 4px; font-size: 12px; }
+.mini-btn { padding: 4px 8px; border-radius: 4px; background: var(--dark); color: #fff; font-size: 11px; font-weight: 600; }
+.mini-btn.ghost { background: none; color: var(--ink-2); border: 1px solid var(--line-2); }
+.people { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 11px; color: var(--ink-2); }
+.people b { display: flex; align-items: center; gap: 6px; color: var(--ink); font-size: 13px; }
+.phone-pop { position: relative; }
+.pop { position: absolute; top: 24px; right: 0; z-index: 5; width: 190px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 6px 18px rgba(0,0,0,.14); font-size: 12px; color: var(--ink-2); }
+.pop div { display: flex; justify-content: space-between; padding: 3px 0; }
+.pop span { color: var(--ink); font-family: var(--fm); direction: ltr; }
+.veh-meta { padding: 12px 4px 0; font-size: 12px; color: var(--ink-2); }
+.veh-meta .last { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.veh-meta .last b { color: var(--ink); }
+.linkish { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; color: var(--ink); font-weight: 700; font-size: 12px; }
+.linkish:hover { text-decoration: underline; }
+.kv { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; padding-top: 12px; }
+.kv b { display: block; color: var(--ink); font-size: 13px; }
+.kv .mono { font-family: var(--fm); font-size: 12px; direction: ltr; text-align: right; }
+.full-btn { align-self: center; margin-top: 16px; padding: 8px 26px; border: 1px solid var(--line-2); border-radius: 18px; background: var(--panel); font-size: 13px; }
+.full-btn:hover, .pill-btn:hover { background: var(--soft); }
+
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.wtabs { display: flex; align-items: center; gap: 26px; padding: 6px 4px 0; border-bottom: 1px solid var(--line); }
+.wtab { padding: 8px 2px 10px; color: var(--ink-2); font-size: 15px; border-bottom: 2.5px solid transparent; margin-bottom: -1px; }
+.wtab[aria-selected="true"] { color: var(--ink); font-weight: 700; border-color: var(--ink); }
+.pill-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--line-2); border-radius: 16px; font-size: 13px; }
+.wtabs .pill-btn { margin-right: auto; }
+.pane { flex: 1; min-height: 0; overflow: auto; padding-top: 12px; }
+.req-tools { display: flex; gap: 22px; padding: 10px 4px 14px; font-size: 13px; }
+.req-tools button { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+.req-tools button:hover { text-decoration: underline; }
+.reqs { border-top: 1px solid var(--line); }
+.req { border-bottom: 1px solid var(--line); }
+.req.done { background: #F3F3F3; }
+.req-row { display: grid; grid-template-columns: 32px 220px minmax(0, 1fr) 100px 30px 30px; align-items: center; gap: 12px; min-height: 64px; padding: 8px 10px; }
+.check { width: 20px; height: 20px; border: 2px solid var(--ink-2); border-radius: 3px; display: grid; place-items: center; background: var(--panel); }
+.req.done .check { background: var(--dark); border-color: var(--dark); color: #fff; }
+.rt { font-weight: 700; font-size: 15px; }
+.rt small { display: flex; align-items: center; gap: 6px; margin-top: 2px; color: var(--ink-3); font-weight: 400; font-size: 11px; }
+.rd { padding-right: 12px; border-right: 1px solid var(--line); font-size: 13px; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 3px; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; }
+.tag.ext { padding: 3px 10px; border-radius: 4px; background: var(--dark); font-size: 12px; }
+.ok-badge { justify-self: start; display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 4px; background: var(--green); color: #fff; font-size: 10px; font-weight: 700; white-space: nowrap; }
+.ok-badge.wait { background: #9E9E9E; }
+.ricon { position: relative; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 6px; color: var(--ink-2); }
+.ricon:hover { background: var(--soft); }
+.ricon:disabled { cursor: default; background: none; }
+.ricon i { position: absolute; top: 0; left: 0; min-width: 14px; height: 14px; border-radius: 7px; background: var(--ink); color: #fff; font: 700 9px/14px var(--fh); font-style: normal; text-align: center; }
+.rnotes { padding: 0 54px 10px 10px; }
+.rnote { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 12px; }
+.av { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #8C8C8C; color: #fff; font-size: 11px; font-weight: 700; flex: none; }
+.av.lg { width: 36px; height: 36px; font-size: 14px; }
+.rnote b { font-size: 12px; }
+.rnote span { color: var(--ink-3); }
+
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { padding: 8px 10px; background: var(--soft); color: var(--ink-2); font-size: 11px; font-weight: 500; text-align: right; }
+.tbl td { padding: 16px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.tbl td.b { font-weight: 700; }
+.tbl td small { display: block; color: var(--ink-2); font-size: 11px; font-weight: 400; }
+.tbl .mono { font-family: var(--fm); font-size: 12px; direction: ltr; text-align: right; }
+.chip { display: inline-block; padding: 2px 8px; border-radius: 9px; background: var(--dark); color: #fff; font-size: 10px; font-weight: 700; }
+.chip.alt { background: #CFCFCF; color: var(--ink); }
+.st { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; font-weight: 700; }
+.st span { padding: 1px 8px; border-radius: 8px; color: #fff; background: var(--green); }
+.st.wait span { background: var(--orange); }
+.st.off span { background: #9E9E9E; }
+.empty { padding: 40px 0; color: var(--ink-3); text-align: center; }
+
+.actions { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding-top: 18px; }
+.act-start { display: flex; align-items: flex-end; gap: 22px; }
+.who { display: block; margin-bottom: 4px; color: var(--ink-2); font-size: 11px; text-align: center; }
+.big-btn { display: inline-flex; align-items: center; gap: 10px; min-width: 210px; justify-content: center; padding: 13px 28px; border-radius: 24px; background: var(--green); color: #fff; font-size: 17px; font-weight: 700; }
+.big-btn.stop { background: var(--red); }
+.big-btn.grey { min-width: 160px; background: #5C5C5C; }
+.big-btn:disabled { opacity: .45; cursor: not-allowed; }
+.add-worker { display: inline-flex; align-items: center; gap: 4px; margin-bottom: 14px; color: var(--ink-2); font-size: 12px; }
+.add-worker:hover { color: var(--ink); text-decoration: underline; }
+
+/* ── job search ── */
+.search { height: calc(100% - 64px); padding-top: 120px; background: var(--panel); text-align: center; }
+.search h2 { margin: 0 0 18px; font-size: 28px; font-weight: 600; }
+.sfield { display: flex; align-items: center; gap: 10px; width: 440px; margin: 0 auto; padding: 8px 16px; border: 1px solid var(--line-2); border-radius: 22px; }
+.sfield input { flex: 1; border: 0; outline: 0; background: none; font-size: 14px; }
+.results { width: 520px; margin: 26px auto 0; text-align: right; }
+.result { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 18px; width: 100%; padding: 14px 10px; border-bottom: 1px solid var(--line); }
+.result:hover { background: var(--soft); }
+.result .mark { width: 38px; height: 38px; margin: 0; font-size: 11px; border-width: 2px; }
+.result .model { font-weight: 700; direction: ltr; text-align: left; }
+.result .model small { display: block; font-weight: 400; font-size: 11px; color: var(--ink-2); }
+.hint { margin-top: 14px; color: var(--ink-3); font-size: 12px; }
+
+/* ── manager ── */
+.mtop .stabs { display: flex; gap: 4px; align-self: flex-end; }
+.stab { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 22px; border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; background: #DCDCDC; color: var(--ink-2); font-size: 14px; }
+.stab[aria-selected="true"] { background: var(--panel); color: var(--ink); font-weight: 700; height: 48px; margin-bottom: -1px; }
+.cnt { display: inline-grid; place-items: center; min-width: 20px; height: 18px; padding: 0 5px; border-radius: 4px; color: #fff; font-size: 11px; font-weight: 700; }
+.views { display: flex; gap: 2px; padding: 2px; border-radius: 6px; background: #D2D2D2; }
+.views button { display: grid; place-items: center; width: 28px; height: 24px; border-radius: 4px; color: var(--ink-2); }
+.views button[aria-pressed="true"] { background: #8A8A8A; color: #fff; }
+.board { position: relative; height: calc(100% - 64px); background: var(--panel); }
+.lane { display: flex; gap: 26px; height: 100%; padding: 22px 24px 120px; overflow-x: auto; overflow-y: hidden; }
+.lane.grid { flex-wrap: wrap; overflow-y: auto; align-content: flex-start; }
+.slot { flex: none; width: 292px; }
+.slot > .pn { margin: 0 4px 6px; color: var(--ink-3); font-size: 15px; }
+.mcard { position: relative; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+.mcard .plate { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); }
+.mc-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 12px 8px; }
+.mc-id { display: flex; gap: 8px; align-items: center; }
+.mc-id .cno small { display: block; color: var(--ink-3); font-size: 10px; }
+.mc-times { display: flex; justify-content: space-between; padding: 6px 12px 10px; font-size: 12px; color: var(--ink-2); }
+.mc-times b { color: var(--ink); }
+.mc-car { margin: 0 8px; padding: 10px 10px 8px; border-radius: 4px; background: var(--soft); }
+.mc-car .row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--ink-2); }
+.mc-car .car { padding: 6px 0 4px; }
+.mc-car .mark { width: 40px; height: 40px; font-size: 12px; border-width: 2px; margin-bottom: 4px; }
+.mc-car .car h2 { font-size: 19px; }
+.mc-car .car p { font-size: 13px; }
+.mc-reqs { position: relative; height: 150px; overflow: hidden; padding: 4px 12px 0; }
+.mc-reqs::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 36px; background: linear-gradient(transparent, var(--panel)); }
+.mc-req { padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 11px; color: var(--ink-2); }
+.mc-req b { display: flex; align-items: center; gap: 6px; color: var(--ink); font-size: 12px; }
+.mc-req.done b { text-decoration: line-through; color: var(--ink-3); }
+.mc-foot { display: flex; gap: 8px; padding: 10px 12px 12px; }
+.mc-foot button { flex: 1; padding: 7px 0; border-radius: 16px; font-size: 12px; }
+.mc-foot .o { border: 1px solid var(--line-2); }
+.mc-foot .o:hover { background: var(--soft); }
+.mc-foot .f { background: #8A8A8A; color: #fff; }
+.mc-foot .f.g { background: var(--green); }
+.mc-foot .f:hover { filter: brightness(.92); }
+.mc-state { display: flex; align-items: center; gap: 8px; margin: 8px 12px 0; padding: 7px 10px; border-radius: 4px; background: #FFF4E0; font-size: 12px; }
+.mc-state.ok { background: #E9F4E1; }
+.mc-state .av { width: 22px; height: 22px; font-size: 10px; }
+
+.drawer { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; }
+.dtabs { display: flex; gap: 2px; padding: 0 24px; direction: ltr; justify-content: flex-start; }
+.dtab { padding: 5px 16px; border: 1px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; background: #E0E0E0; color: var(--ink-2); font-size: 12px; }
+.dtab[aria-selected="true"] { background: #6E6E6E; color: #fff; font-weight: 700; }
+.dbody { display: flex; gap: 6px; height: 96px; padding: 12px 24px; overflow-x: auto; background: #E6E6E6; border-top: 1px solid var(--line); }
+.drawer.assign .dbody { background: #FFF4D6; }
+.assign-msg { position: absolute; bottom: 104px; right: 24px; display: flex; align-items: center; gap: 12px; padding: 8px 14px; border-radius: 6px; background: var(--ink); color: #fff; font-size: 13px; }
+.assign-msg button { color: #fff; text-decoration: underline; font-size: 12px; }
+.wk { flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 80px; font-size: 11px; }
+.wk .av { position: relative; width: 44px; height: 44px; font-size: 14px; background: #9A9A9A; }
+.wk .av::after { content: ""; position: absolute; top: 0; right: 0; width: 11px; height: 11px; border: 2px solid #E6E6E6; border-radius: 50%; background: var(--green); }
+.wk[data-s="busy"] .av::after { background: var(--orange); }
+.wk[data-s="alert"] .av::after { background: var(--red); }
+.wk b { font-size: 12px; white-space: nowrap; }
+.wk small { color: var(--ink-3); }
+.drawer.assign .wk[data-s="free"] .av { outline: 2px dashed var(--ink); outline-offset: 2px; }
+.drawer.assign .wk[data-s="busy"] { opacity: .45; }
+.station { flex: none; width: 150px; padding: 8px 10px; border: 1px solid var(--line-2); border-radius: 6px; background: var(--panel); font-size: 12px; }
+.station b { display: block; }
+.station small { color: var(--ink-3); }
+.notif { position: absolute; top: 58px; left: 70px; z-index: 12; width: 330px; max-height: 420px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 10px 28px rgba(0,0,0,.18); }
+.notif h3 { margin: 0; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.ni { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--ink-2); }
+.ni b { color: var(--ink); font-size: 13px; }
+.ni time { grid-row: 1 / span 2; grid-column: 2; color: var(--ink-3); }
+.ni.new { background: #FFF8E6; }
+
+/* ── modals ── */
+.scrim { position: absolute; inset: 0; z-index: 20; background: var(--scrim); display: flex; align-items: center; justify-content: flex-end; padding: 24px 24px 24px 24px; }
+.scrim.center { justify-content: center; }
+.modal { position: relative; display: flex; flex-direction: column; width: 560px; max-height: 100%; background: var(--panel); box-shadow: 0 10px 40px rgba(0,0,0,.22); }
+.modal.wide { width: 1080px; height: 100%; }
+.modal.left { margin-left: auto; margin-right: 330px; height: 100%; }
+.mhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.mhead h3 { margin: 0; font-size: 18px; }
+.mbody { flex: 1; min-height: 0; overflow: auto; padding: 18px 20px; }
+.mfoot { display: flex; justify-content: center; padding: 14px 20px; border-top: 1px solid var(--line); }
+.black-btn { min-width: 180px; padding: 10px 24px; border-radius: 20px; background: var(--ink); color: #fff; font-weight: 700; }
+.black-btn:disabled { opacity: .35; cursor: not-allowed; }
+.xbtn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; }
+.xbtn:hover { background: var(--soft); }
+.ctx { display: flex; align-items: center; gap: 12px; padding: 10px 6px 14px; border-bottom: 1px solid var(--line); }
+.ctx .rt { white-space: nowrap; }
+.ctx .rd { flex: 1; }
+.ident { width: 230px; margin: 10px auto; padding: 18px 16px; border: 1.5px dashed var(--line-2); border-radius: 8px; text-align: center; }
+.swipe { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; padding: 8px; border-radius: 6px; font-weight: 700; }
+.swipe:hover { background: var(--soft); }
+.or { display: flex; align-items: center; gap: 8px; justify-content: center; margin: 8px 0; font-weight: 700; }
+.or::before, .or::after { content: ""; width: 12px; height: 1px; background: var(--ink); }
+.ident input { width: 100%; padding: 8px 2px; border: 0; border-bottom: 1px solid var(--line-2); outline: 0; font-size: 12px; text-align: right; }
+.ident h4 { margin: 14px 0 4px; color: var(--ink-3); font-size: 10px; font-weight: 500; text-align: right; }
+.wpick { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 4px; border-radius: 6px; text-align: right; }
+.wpick:hover { background: var(--soft); }
+.wpick small { display: block; color: var(--ink-3); font-size: 10px; }
+.wpick b { font-size: 13px; }
+.compose { padding: 14px 0; }
+.compose .by { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: 700; }
+.compose form { display: flex; gap: 12px; align-items: center; }
+.compose input[type=text] { flex: 1; padding: 8px 2px; border: 0; border-bottom: 1px solid var(--line-2); outline: 0; }
+.lang { display: flex; align-items: center; gap: 4px; margin: 10px 0; font-size: 12px; color: var(--ink-2); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { padding: 4px 10px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--soft); font-size: 11px; }
+.chips button:hover { background: var(--soft-2); }
+.note-item { display: flex; gap: 10px; padding: 10px 0; }
+.note-bubble { padding: 8px 12px; border-radius: 8px; background: var(--soft); font-size: 13px; }
+.note-bubble small { display: block; color: var(--ink-3); font-size: 11px; }
+.note-meta { margin-top: 3px; color: var(--ink-3); font-size: 10px; }
+.add-line { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 12px; padding: 12px; border: 1px solid var(--line-2); border-radius: 4px; font-weight: 600; font-size: 13px; }
+.add-line:hover { background: var(--soft); }
+.media-main { position: relative; display: grid; place-items: center; height: 300px; margin-top: 16px; border-radius: 6px; background: repeating-linear-gradient(45deg, #DDDDDD 0 14px, #D2D2D2 14px 28px); color: var(--ink-2); font-size: 13px; }
+.media-main .ph { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 18px; border-radius: 8px; background: rgba(255,255,255,.85); }
+.thumbs { display: flex; gap: 10px; margin-top: 12px; }
+.thumb { flex: 1; height: 64px; border-radius: 4px; background: #D6D6D6; display: grid; place-items: center; color: var(--ink-2); border: 2px solid transparent; }
+.thumb[aria-pressed="true"] { border-color: var(--ink); }
+.cats { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 10px; border: 1px solid var(--line-2); height: 280px; }
+.cats div { overflow: auto; border-left: 1px solid var(--line-2); }
+.cats div:last-child { border-left: 0; }
+.cats button { display: block; width: 100%; padding: 4px 10px; text-align: right; font-size: 12px; }
+.cats button:hover { background: var(--soft); }
+.cats button[aria-pressed="true"] { background: #CFCFCF; font-weight: 700; }
+.msearch { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--line-2); border-radius: 4px; }
+.msearch input { flex: 1; border: 0; outline: 0; }
+.lbl { margin: 14px 0 6px; color: var(--ink-2); font-size: 12px; }
+.finish-opts { display: grid; gap: 10px; }
+.finish-opts button { padding: 16px; border: 1px solid var(--line-2); border-radius: 8px; font-size: 15px; font-weight: 600; text-align: right; }
+.finish-opts button:hover { background: var(--soft); border-color: var(--ink); }
+.vtabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.kvgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 20px; font-size: 12px; color: var(--ink-2); }
+.kvgrid b { display: block; color: var(--ink); font-size: 14px; }
+.kvgrid .mono { font-family: var(--fm); direction: ltr; text-align: right; }
+.sec-h { margin: 22px 0 8px; font-size: 14px; font-weight: 700; }
+
+.toast { position: absolute; bottom: 24px; left: 50%; z-index: 50; transform: translateX(-50%); padding: 10px 18px; border-radius: 20px; background: var(--ink); color: #fff; font-size: 13px; box-shadow: 0 6px 18px rgba(0,0,0,.2); white-space: nowrap; }
+
+/* ── polish layer: same wireframe language, more depth and care ── */
+body { -webkit-font-smoothing: antialiased; }
+.top { background: linear-gradient(#EEF0F2, #E6E8EB); border-bottom-color: var(--line-2); }
+.ctab { border-color: var(--line-2); background: #DDE0E4; border-radius: 10px 10px 0 0; transition: background .2s; }
+.ctab:hover { background: #E6E9EC; }
+.ctab.on { box-shadow: 0 -3px 10px rgba(16,24,40,.06); }
+.iron { border-radius: 4px; background: #757B84; letter-spacing: -.02em; }
+.plate { position: relative; padding: 4px 9px 4px 22px; border-radius: 5px; background: #CDD1D6; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
+.plate::before { content: "IL"; position: absolute; top: 0; bottom: 0; left: 0; width: 14px; display: grid; place-items: center; border-radius: 3px 0 0 3px; background: #8E949C; color: #fff; font: 700 7px/1 var(--fh); letter-spacing: 0; }
+.ctab.on .plate::before, .plate.y::before { background: var(--il); }
+.plate.big { padding-left: 28px; }
+.mark { width: 54px; height: 54px; border: 0; border-radius: 50%; color: var(--ink); }
+.mark svg { width: 100%; height: 100%; }
+.mc-car .mark { width: 40px; height: 40px; }
+.result .mark { width: 36px; height: 36px; }
+.ws { background: var(--panel); }
+.veh { background: linear-gradient(180deg, #F3F4F6, #ECEEF1); border: 1px solid var(--line); border-radius: 18px; }
+.veh-card { border-radius: 12px; box-shadow: var(--sh1); }
+.wbadge { padding: 3px 9px; font-weight: 600; }
+.full-btn, .pill-btn { transition: background .2s, border-color .2s; }
+.wtab { transition: color .2s, border-color .2s; }
+.wtab:hover { color: var(--ink); }
+.req { transition: background .2s; }
+.req:hover { background: #FAFBFC; }
+.req.done { background: #F6F7F8; }
+.req.done .rt, .req.done .rd { color: var(--ink-3); }
+.check { border: 1.75px solid #9AA0A8; border-radius: 6px; transition: background .2s, border-color .2s, transform .15s; }
+.check:hover { border-color: var(--ink); }
+.check:active { transform: scale(.92); }
+.req.done .check { background: var(--green); border-color: var(--green); }
+.ok-badge { border-radius: 10px; padding: 2px 8px; }
+.tag { border-radius: 4px; }
+.tbl th { background: #F3F4F6; border-radius: 0; font-weight: 600; letter-spacing: .01em; }
+.tbl tbody tr { transition: background .2s; }
+.tbl tbody tr:hover { background: #FAFBFC; }
+.big-btn { box-shadow: 0 8px 18px -6px rgba(95,168,59,.55); transition: transform .2s var(--ease), box-shadow .2s, filter .2s; }
+.big-btn:not(:disabled):hover { transform: translateY(-1px); filter: brightness(1.04); }
+.big-btn.stop { box-shadow: 0 8px 18px -6px rgba(214,69,69,.55); }
+.big-btn.grey { box-shadow: 0 8px 18px -8px rgba(16,24,40,.45); background: #4A4F57; }
+.big-btn:disabled { box-shadow: none; }
+.stab { border-color: var(--line-2); background: #DDE0E4; border-radius: 10px 10px 0 0; transition: background .2s; }
+.stab:hover { background: #E6E9EC; }
+.stab[aria-selected="true"] { box-shadow: 0 -3px 10px rgba(16,24,40,.06); }
+.cnt { border-radius: 5px; }
+.lane { background: linear-gradient(var(--panel), #FAFBFC); }
+.mcard { border-color: var(--line); border-radius: 12px; box-shadow: var(--sh1); transition: box-shadow .25s var(--ease), transform .25s var(--ease); }
+.mcard:hover { box-shadow: var(--sh2); transform: translateY(-2px); }
+.mc-car { border-radius: 8px; background: linear-gradient(180deg, #F3F4F6, #ECEEF1); }
+.mc-state { border-radius: 8px; }
+.mc-foot button { transition: background .2s, filter .2s; }
+.mc-foot .f { background: #4A4F57; }
+.dbody { background: #ECEEF1; border-top-color: var(--line-2); }
+.dtab { border-color: var(--line-2); background: #DDE0E4; border-radius: 8px 8px 0 0; }
+.dtab[aria-selected="true"] { background: #4A4F57; }
+.wk .av { box-shadow: 0 0 0 3px #fff, var(--sh1); transition: transform .2s var(--ease); }
+.wk:hover .av { transform: translateY(-2px); }
+.wk .av::after { border-color: #fff; }
+.av { background: #7C828B; }
+.modal { border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px -12px rgba(16,24,40,.35); }
+.scrim.enter { animation: aic-fade .2s ease both; }
+.scrim.enter .modal { animation: aic-pop .28s var(--ease) both; }
+@keyframes aic-fade { from { opacity: 0; } }
+@keyframes aic-pop { from { opacity: 0; transform: translateY(10px) scale(.985); } }
+.black-btn { transition: transform .2s var(--ease), opacity .2s; }
+.black-btn:not(:disabled):hover { transform: translateY(-1px); }
+.chips button { transition: background .2s, border-color .2s; }
+.chips button:hover { border-color: var(--ink-3); }
+.toast { animation: aic-toast .3s var(--ease) both; }
+@keyframes aic-toast { from { opacity: 0; transform: translate(-50%, 8px); } }
+.notif { border-radius: 12px; }
+.sfield { box-shadow: var(--sh1); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* grid view: the original's landscape cards, two rows, scrolling sideways */
+.lane.grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, minmax(308px, 1fr)); grid-auto-columns: 520px; gap: 16px 26px; padding-bottom: 118px; overflow: auto; flex-wrap: nowrap; }
+.slot.wide { width: auto; min-height: 0; display: flex; flex-direction: column; }
+.mcard.wide { flex: 1; min-height: 0; flex-direction: row; }
+.mcard.wide .wc-side { flex: none; width: 250px; padding-bottom: 10px; border-left: 1px solid var(--line); }
+.mcard.wide .wc-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.wc-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 12px 6px; font-size: 13px; }
+.wstate { margin: 0 12px 4px; padding: 4px 8px; border-radius: 6px; background: #FFF4E0; font-size: 11px; }
+.wstate.ok { background: #E9F4E1; }
+.mcard.wide .mc-reqs { flex: 1; height: auto; min-height: 0; }
+.mcard.wide .wc-side { overflow: hidden; }
+.mcard.wide .mc-times { flex-direction: column; gap: 2px; }
+.mcard.wide .mc-car .car h2 { font-size: 17px; }
+
+/* drag and drop on the manager board */
+.lane .mcard { cursor: grab; -webkit-user-select: none; user-select: none; }
+body.dragmode, body.dragmode * { cursor: grabbing !important; }
+.slot.dragging .mcard { opacity: .32; box-shadow: none; transform: none; outline: 2px dashed var(--line-2); outline-offset: -2px; }
+.slot.dragging .pn { opacity: .4; }
+.drag-ghost { position: fixed; top: 0; left: 0; z-index: 100; width: 250px; pointer-events: none; transform-origin: 0 0; direction: rtl; }
+.drag-ghost .gi { position: relative; padding: 24px 12px 12px; border-radius: 12px; background: var(--panel); box-shadow: 0 24px 48px -12px rgba(16,24,40,.38), 0 4px 10px rgba(16,24,40,.08); rotate: -2deg; animation: ghost-in .18s var(--ease) both; transition: scale .18s var(--ease), rotate .18s var(--ease); }
+.drag-ghost .plate { position: absolute; top: -13px; left: 50%; translate: -50% 0; }
+.drag-ghost .mc-car { margin: 0; text-align: center; }
+.drag-ghost.over-wk .gi { scale: .78; rotate: 0deg; }
+@keyframes ghost-in { from { scale: .9; opacity: .5; } }
+.drag-msg { pointer-events: none; }
+body.dragassign .wk[data-s="free"] .av { outline: 2px dashed var(--green); outline-offset: 3px; }
+body.dragassign .wk:not([data-s="free"]) { opacity: .45; }
+.wk.drop .av { outline: 3px solid var(--green) !important; outline-offset: 3px; transform: scale(1.14); }
+.wk.nodrop .av { outline: 2px solid var(--red) !important; outline-offset: 3px; }
+
+@media (max-width: 860px) {
+  .fbar { gap: 10px; }
+}
+@media (max-width: 520px) { .fbar .lg { display: none; } .roles button { padding: 6px 8px; } }
+</style>
+<script src="assets/track.js?v=5" async></script>
+</head>
+<body>
+<div class="fbar">
+  <a href="champion-motors.html#ch-design">&larr; <span class="lg">Back to the </span>case</a>
+  <div class="roles" role="group" aria-label="Station">
+    <button type="button" data-act="role" data-v="ws">Mechanic<span class="lg"> station</span></button>
+    <button type="button" data-act="role" data-v="mgr"><span class="lg">Floor </span>manager</button>
+  </div>
+</div>
+<div id="stage"><div id="app"></div></div>
+
+<script>
+(function () {
+'use strict';
+// ── icons (simple line set, wireframe weight) ──
+var P = {
+  plus: '<path d="M12 5v14M5 12h14"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
+  refresh: '<path d="M20 11a8 8 0 0 0-14.5-4.5M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5M20 20v-4h-4"/>',
+  bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9M10 20a2 2 0 0 0 4 0"/>',
+  x: '<path d="M6 6l12 12M18 6 6 18"/>', check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  camera: '<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  note: '<path d="M5 4h14v11l-5 5H5z"/><path d="M14 20v-5h5"/>',
+  notes: '<path d="M7 4h11v13H7z"/><path d="M4 7v13h11"/><path d="M10 8h5M10 11h5"/>',
+  person: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5c1.3-2.2 3.2-3.3 5.5-3.3s4.2 1.1 5.5 3.3"/>',
+  access: '<circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v6h5l2 5M12 10h4"/><path d="M9 11.5A5 5 0 1 0 15.5 18"/>',
+  spark: '<path d="M10 3c.6 4 2 5.4 6 6-4 .6-5.4 2-6 6-.6-4-2-5.4-6-6 4-.6 5.4-2 6-6zM18 13c.3 2 1 2.7 3 3-2 .3-2.7 1-3 3-.3-2-1-2.7-3-3 2-.3 2.7-1 3-3z"/>',
+  warn: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  key: '<circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/>', pin: '<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',
+  phone: '<path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v3a3 3 0 0 1-3 3A15 15 0 0 1 3 6a3 3 0 0 1 3-3z"/>',
+  pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/>', history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/>',
+  ext: '<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>', play: '<path d="M7 4.5v15l12-7.5z"/>', stop: '<rect x="6" y="6" width="12" height="12" rx="1"/>',
+  cols: '<rect x="4" y="4" width="6" height="16" rx="1"/><rect x="14" y="4" width="6" height="16" rx="1"/>',
+  grid: '<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/>',
+  badge: '<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10 3v3h4V3"/><circle cx="12" cy="11" r="2.5"/><path d="M8.5 17c.7-1.6 2-2.4 3.5-2.4s2.8.8 3.5 2.4"/>',
+  chevL: '<path d="m15 6-6 6 6 6"/>', chevR: '<path d="m9 6 6 6-6 6"/>', chevD: '<path d="m6 9 6 6 6-6"/>', info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+  share: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 10.8 7.6-3.6M8.2 13.2l7.6 3.6"/>',
+  dots: '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>', img: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 4"/>'
+};
+function ic(n, s, w) { return '<svg width="' + (s || 18) + '" height="' + (s || 18) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.7) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[n] + '</svg>'; }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function initials(n) { var p = n.split(' '); return (p[0][0] || '') + (p[1] ? p[1][0] : ''); }
+function pad(n) { return (n < 10 ? '0' : '') + n; }
+function now() { var d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+function today() { var d = new Date(); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); }
+
+// ── data (all fictional) ──
+var WORKERS = [
+  { n: 'נועה ברק', id: '12', s: 'free' }, { n: 'בר דורון', id: '32', s: 'free' }, { n: 'איגור לוין', id: '09', s: 'busy' },
+  { n: 'יואב שמש', id: '45', s: 'busy' }, { n: 'רון בלום', id: '07', s: 'free' }, { n: 'ענבל קדמי', id: '10', s: 'alert' },
+  { n: 'אלון שרף', id: '08', s: 'busy' }, { n: 'אסף עמית', id: '06', s: 'free' }, { n: 'מאיה סגל', id: '05', s: 'free' },
+  { n: 'סאמר חטיב', id: '04', s: 'free' }, { n: 'דור כרמל', id: '03', s: 'free' }, { n: 'עידו מנור', id: '02', s: 'free' },
+  { n: 'תומר רז', id: '01', s: 'free' }
+];
+var STATIONS = ['עמדה 1 · הרמה', 'עמדה 2 · הרמה', 'עמדה 3 · חשמלאות', 'עמדה 4 · מיזוג', 'עמדה 5 · צמיגים', 'עמדה 6 · שטיפה'];
+var CATS = {
+  'ביקורת/קמפיין': ['ביקורת/קמפיין קיץ', 'ביקורת/קמפיין חורף'],
+  'נורית אזהרה בדשבורד': ['נורת מנוע', 'נורת EPC', 'נורת ABS', 'נורת כרית אוויר'],
+  'מנוע': ['רעש חריג', 'רעידות', 'איבוד כוח', 'דליפת שמן'],
+  'בלמים': ['בלימה קשה', 'חריקה בבלימה', 'רפידות שחוקות'],
+  'תיבת הילוכים': ['העברה קשה', 'מכה בהעברה'],
+  'מיזוג אוויר': ['לא מקרר', 'ריח מהמזגן', 'חדירת מים'],
+  'חשמל כללי': ['תא מטען לא נפתח', 'חלון לא עולה', 'מצבר חלש'],
+  'צמיגים': ['תקר', 'שחיקה לא אחידה', 'החלפת צמיגים'],
+  'מולטימדיה': ['מסך לא נדלק', 'בלוטות\' לא מתחבר'],
+  'גוף רכב': ['שריטה', 'פנס שבור']
+};
+var CHIPS = ['נבדק ונמצא תקין', 'הוחלף ובוצע', 'ממתין לחלקים', 'ממתין שהלקוח יאשר', 'ממתין לשמאי', 'לאחר פירוק גלגלים, הבלמים נמצאו תקינים', 'הוחלפו רפידות קדמיות', 'הוחלפו רפידות אחוריות'];
+
+function R(t, code, d, o) { o = o || {}; return { t: t, code: code, d: d, tag: o.tag || '', ok: o.ok !== false, done: !!o.done, notes: o.notes || [], media: o.media || 0 }; }
+function card(o) {
+  var c = {
+    iron: '', no: '', plate: '', brand: 'VW', model: '', trim: '', warranty: true, entry: 'היום, 10:00', promised: 'היום, 15:30', late: false,
+    loc: 'חניה מס\' 3', key: '1234*', customer: 'דניאל אברהם', advisor: 'מיכל שגיא', home: '03-5550142', mobile: '050-5550187',
+    flags: { wait: false, access: false, fresh: false, safety: false }, status: 'before', worker: '', review: false,
+    last: 'ספטמבר 2025', lastAgo: '(1.2 שנים)', road: '04/03/2023 (3.1 שנים)', km: '124,791', vin: 'WVWZZZ1KZDW000417', engine: 'DFFF',
+    reqs: [], parts: [], story: [], clock: [], working: [], startedAt: null
+  };
+  for (var k in o) c[k] = o[k];
+  return c;
+}
+var STORY14 = [
+  ['18/10/2025', '15:37', 'קבלת הרכב', '', 'מיכל שגיא', 'ok'],
+  ['30/10/2025', '04:14', 'רכב עומד - שהות ממושכת', '', 'מיכל שגיא', 'wait'],
+  ['31/10/2025', '15:18', 'הגשת בקשה להשכרת רכב', 'תקופת השכרה: 29/10 - 01/11', 'עומר לב', 'ok'],
+  ['31/10/2025', '15:22', 'אישור השכרת רכב', 'תקופת השכרה: 29/10 - 01/11', 'עומר לב', 'ok'],
+  ['01/11/2025', '10:00', 'סיום השכרת רכב', '', 'עומר לב', 'ok'],
+  ['02/11/2025', '15:12', 'העברה לחשמלאות', '', 'מיכל שגיא', 'wait'],
+  ['03/11/2025', '10:08', 'הערה פנימית', 'הלקוח ביקש עדכון טלפוני לפני כל תוספת', 'מיכל שגיא', 'off']
+];
+var S = {
+  role: 'app', view: 'ws', wsTab: 'req', open: ['14', '09'], active: '14', searchQ: '', searchDone: false,
+  mgrTab: 'before', layout: 'cols', drawer: 'workers', assignFor: '', notifOpen: false, unread: 2, narrowDismissed: false,
+  notifs: [
+    { b: 'עובד פנוי', t: 'נועה ברק פנויה לעבודה', at: '11:00' },
+    { b: 'אי עמידה בזמנים', t: 'סקודה פאביה 123-45-678 מתקרבת לשעת הסיום המובטח', at: '11:45' },
+    { b: 'רכב חדש לפני כניסה', t: 'פולקסווגן פולו 611-20-305 נכנס לעדיפות 3', at: '12:30' }
+  ],
+  cards: [
+    card({ iron: '14', no: '286795', plate: '542-33-894', model: 'Golf', trim: 'TSI 1.0 95HP', entry: 'היום, 10:30', promised: 'היום, 16:30', late: true,
+      loc: 'צמוד לגדר, מימין לשומר', flags: { wait: true, access: true, fresh: true, safety: true }, status: 'before', priority: 1,
+      reqs: [
+        R('נורית אזהרה בדשבורד', '10400', 'נורת EPC דולקת, הרכב לא עובר 3000 סל"ד, לא סוחב', { tag: 'repeat', media: 6 }),
+        R('חשמל כללי', '10400', 'תא המטען לא נפתח ממתג תא המטען', { ok: false }),
+        R('טיפול תקופתי', '10400', 'טיפול 135,000'),
+        R('הרחבת עבודה', '99001363', 'הלקוח ביקש להשאיר את יתרת השמן ברכב', { tag: 'ext', ok: false })
+      ],
+      parts: [['18/10/25', 'מדחס', 'V2Q0820127A', '1', '1', 'orig'], ['18/10/25', 'טבעת', 'V2Q0820128B', '1', '1', 'orig'], ['18/10/25', 'בורג', 'N10650402', '3', '3', 'orig'], ['18/10/25', 'גז מזגנים חדש', 'G052G1234', '0.10', '0.10', 'alt']],
+      story: STORY14,
+      clock: [['עומר לב', '15', '18/10/25', '08:41', '10:33', '1:52', '1.86'], ['עומר לב', '15', '18/10/25', '11:05', '12:23', '1:18', '1.30']] }),
+    card({ iron: '09', no: '286811', plate: '123-45-678', brand: 'SK', model: 'Fabia Space', trim: 'Ambition 1.0', warranty: false, promised: 'מחר, 12:30', loc: 'חניה מס\' 42', key: '4312*',
+      flags: { wait: false, access: true, fresh: false, safety: false }, status: 'before', priority: 2, customer: 'שירה נחום', vin: 'TMBJG7NJ0J5000921', km: '45,210', engine: 'CHZB',
+      reqs: [R('טיפול תקופתי', '10400', 'טיפול 45,000'), R('חשמל כללי', '10400', 'תא המטען לא נפתח ממתג תא המטען'), R('החלפת רפידות', '10400', 'קדמי ואחורי', { ok: false })],
+      story: [['09/11/2025', '09:40', 'קבלת הרכב', '', 'מיכל שגיא', 'ok']] }),
+    card({ iron: '11', no: '286820', plate: '611-20-305', model: 'Polo', trim: 'TSI 1.0 95HP', loc: 'חניה מס\' 3', flags: { wait: false, access: true, fresh: false, safety: false }, status: 'before', priority: 3, customer: 'אבי רוזן',
+      reqs: [R('נורית אזהרה בדשבורד', '10400', 'נורת EPC דולקת, הרכב לא סוחב'), R('חשמל כללי', '10400', 'תא המטען לא נפתח ממתג תא המטען'), R('טיפול תקופתי', '10400', 'טיפול 135,000')] }),
+    card({ iron: '07', no: '286824', plate: '208-77-410', model: 'Passat', trim: 'TSI 1.5 150HP', loc: 'חניה מס\' 54', flags: { wait: false, access: false, fresh: true, safety: false }, status: 'before', priority: 4, customer: 'ליאת גבע',
+      reqs: [R('טיפול תקופתי', '10400', 'טיפול 15,000'), R('מיזוג אוויר', '10400', 'ריח מהמזגן בהפעלה')] }),
+    card({ iron: '02', no: '286790', plate: '599-89-966', model: 'Golf', trim: 'TSI 1.0 95HP', status: 'work', worker: 'איגור לוין', priority: 5, customer: 'יעל פרץ',
+      reqs: [R('בלמים', '10400', 'חריקה בבלימה', { done: true }), R('טיפול תקופתי', '10400', 'טיפול 60,000')] }),
+    card({ iron: '23', no: '286788', plate: '599-89-966', model: 'Golf', trim: 'TSI 1.0 95HP', status: 'work', worker: 'יואב שמש', priority: 6, customer: 'יעל פרץ',
+      reqs: [R('מיזוג אוויר', '10400', 'לא מקרר')] }),
+    card({ iron: '31', no: '286779', plate: '732-15-660', brand: 'SE', model: 'Ibiza', trim: 'TSI 1.0 85HP', status: 'work', worker: 'אלון שרף', priority: 7, customer: 'גיא אלמוג',
+      reqs: [R('צמיגים', '10400', 'החלפת 4 צמיגים')] }),
+    card({ iron: '18', no: '286801', plate: '415-62-019', brand: 'SK', model: 'Octavia', trim: 'TSI 1.5 150HP', status: 'waiting', priority: 8, customer: 'נטע הלפרין', late: true,
+      reqs: [R('תיבת הילוכים', '10400', 'מכה בהעברה לשני', { ok: false })] }),
+    card({ iron: '26', no: '286806', plate: '390-48-772', model: 'Tiguan', trim: 'TSI 1.5 150HP', status: 'waiting', priority: 9, customer: 'משה קליין',
+      reqs: [R('גוף רכב', '10400', 'פנס אחורי שבור', { ok: false })] }),
+    card({ iron: '05', no: '286770', plate: '268-30-114', brand: 'SK', model: 'Kamiq', trim: 'TSI 1.0 110HP', status: 'done', priority: 10, customer: 'הדס עוז',
+      reqs: [R('טיפול תקופתי', '10400', 'טיפול 30,000', { done: true })] })
+  ]
+};
+function C(iron) { for (var i = 0; i < S.cards.length; i++) if (S.cards[i].iron === iron) return S.cards[i]; return null; }
+function W(n) { for (var i = 0; i < WORKERS.length; i++) if (WORKERS[i].n === n) return WORKERS[i]; return null; }
+var LOGO = { VW: 'M12 0C5.36 0 0 5.36 0 12S5.36 24 12 24 24 18.64 24 12 18.64 0 12 0M12 1.41C13.2 1.41 14.36 1.63 15.43 2L12.13 9.13C12.09 9.17 12.09 9.26 12 9.26S11.91 9.17 11.87 9.13L8.57 2C9.64 1.63 10.8 1.42 12 1.42M6.9 2.74L10.72 10.97C10.8 11.14 10.89 11.19 11 11.19H13C13.12 11.19 13.2 11.14 13.29 10.97L17.06 2.74C18.64 3.64 20 4.93 20.96 6.47L15.6 16.84C15.56 16.93 15.5 16.97 15.47 16.97C15.39 16.97 15.39 16.89 15.34 16.84L13.29 12.3C13.2 12.13 13.12 12.09 13 12.09H11C10.89 12.09 10.8 12.13 10.71 12.3L8.66 16.84C8.61 16.89 8.62 16.97 8.53 16.97C8.44 16.97 8.44 16.89 8.4 16.84L3 6.47C3.94 4.93 5.32 3.64 6.9 2.74M2.06 8.53L8.23 20.53C8.31 20.7 8.4 20.83 8.62 20.83C8.83 20.83 8.91 20.7 9 20.53L11.87 14.14C11.91 14.06 11.96 14 12 14C12.09 14 12.09 14.1 12.13 14.14L15.04 20.53C15.13 20.7 15.21 20.83 15.43 20.83C15.64 20.83 15.73 20.7 15.81 20.53L22 8.53C22.37 9.6 22.59 10.76 22.59 12C22.54 17.79 17.79 22.59 12 22.59C6.21 22.59 1.46 17.79 1.46 12C1.46 10.8 1.67 9.65 2.06 8.53Z', SK: 'M12 0C5.3726 0 0 5.3726 0 12s5.3726 12 12 12 12-5.3726 12-12S18.6274 0 12 0Zm0 22.9636C5.945 22.9636 1.0364 18.055 1.0364 12 1.0364 5.945 5.945 1.0364 12 1.0364S22.9636 5.945 22.9636 12 18.055 22.9636 12 22.9636Zm5.189-7.2325-.269.7263h-.984c.263-.7089 3.5783-8.6177-2.9362-13.9819a9.5254 9.5254 0 0 0-4.0531.4483c.2172.175 2.474 2.0276 3.5373 4.315l-.312.084c-.5861-.6387-2.7156-2.9833-4.7448-3.7379a9.6184 9.6184 0 0 0-2.8448 2.3597c.953.4875 3.4432 1.9748 4.3896 3.1302-.0542.0244-.267.139-.267.139-1.736-1.3195-4.8199-2.0043-4.9775-2.0383a9.5126 9.5126 0 0 0-1.2267 3.6098c4.7759.9613 6.0618 3.1715 6.2818 5.6721H7.878l-1.5545-.6776a.8563.8563 0 0 0-.2524-.0531H3.1767a9.587 9.587 0 0 0 1.9267 2.9155h1.2334c.1063 0 .1993-.0133.2923-.0664l1.2489-.6378h9.042l.269.7264a4.8386 4.8386 0 0 0 2.9466-1.4667 4.839 4.839 0 0 0-2.9467-1.4666zm-4.14-.5786a1.1863 1.1863 0 0 1-.5038-1.2162 1.1862 1.1862 0 0 1 .931-.9309 1.1863 1.1863 0 0 1 1.2161.5038c.3098.4636.2563 1.0924-.1473 1.496-.4032.4032-1.0318.4574-1.496.1473z', SE: 'M0 10.325l23.98 4.46c-.021.657-.062 2.712-.103 3.903-.041 1.418-.35 2.281-.925 2.815-.801.72-1.747.884-4.007 1.007-5.219.288-10.54.247-17.219-.226-.699-.04-.966-.185-1.089-.267-.288-.205-.329-.431-.411-1.603-.062-.801-.164-3.123-.205-3.904 3.102.206 7.849.37 11.712.37.966 0 3.493.02 4.171.02.534 0 1.233-.143 1.582-.698L0 13.222zm.02-1.253c.021-.76.062-2.65.103-3.76.041-1.418.35-2.281.925-2.815.801-.72 1.747-.884 4.007-1.007 5.219-.288 10.54-.247 17.219.226.699.04.966.185 1.089.267.288.205.329.431.411 1.603.041.678.144 2.486.185 3.472-2.301-.123-6.206-.308-9.596-.35-3.39-.04-6.452.021-6.822.063-.74.102-1.089.452-1.192.595L24 10.634v2.568Z' };
+var BRAND = { VW: 'Volkswagen', SK: 'Škoda', SE: 'SEAT' };
+var mark = function (b) { return '<span class="mark" title="' + BRAND[b] + '"><svg viewBox="0 0 24 24" role="img" aria-label="' + BRAND[b] + '"><path fill="currentColor" d="' + LOGO[b] + '"/></svg></span>'; };
+
+// ── rendering ──
+var app = document.getElementById('app'), stage = document.getElementById('stage');
+var modal = null, lastModal = null, toastT = 0;
+
+function render() {
+  var h = '';
+  if (S.view === 'ws') h = wsTop() + wsView();
+  else if (S.view === 'search') h = wsTop() + searchView();
+  else h = mgrTop() + mgrView();
+  if (modal) h += modal();
+  app.innerHTML = h;
+  if (modal && modal !== lastModal) { var sc = app.querySelector('.scrim'); if (sc) sc.classList.add('enter'); }
+  lastModal = modal;
+  document.querySelectorAll('.roles button').forEach(function (b) { b.setAttribute('aria-pressed', String((b.dataset.v === 'mgr') === (S.view === 'mgr'))); });
+  var f = app.querySelector('[data-focus]'); if (f) f.focus();
+}
+
+function clockHtml(extra) { return '<div class="clock">' + (extra || '') + '<span>' + today() + '</span><b>' + now() + '</b></div>'; }
+
+function wsTop() {
+  var tabs = S.open.map(function (ir) {
+    var c = C(ir), on = S.view === 'ws' && S.active === ir;
+    return '<button type="button" class="ctab' + (on ? ' on' : '') + '" data-act="opencard" data-v="' + ir + '">' +
+      '<span class="iron">' + ir + '</span><span class="cno">מס\' כרטיס<b>' + c.no + '</b></span>' +
+      (c.late ? '<span class="dot-alert" title="מתקרב לשעת הסיום המובטח">!</span>' : '') +
+      '<span class="plate">' + c.plate + '</span></button>';
+  }).join('');
+  if (S.view === 'search') tabs += '<span class="ctab on" style="padding:0 26px;font-weight:700">כרטיס עבודה חדש</span>';
+  return '<div class="top"><div class="brand"><span class="logo">צ\'מפיון מוטורס</span><small>משימות משטח עבודה</small></div>' +
+    '<div class="ctabs">' + tabs + '</div>' +
+    '<button type="button" class="newtab" data-act="newcard" aria-label="כרטיס עבודה חדש">' + ic('plus', 22) + '</button>' +
+    clockHtml('<button type="button" class="ibtn" data-act="refresh" aria-label="רענון">' + ic('refresh', 18) + '</button>') + '</div>';
+}
+
+function vehPanel(c, ro) {
+  var f = c.flags;
+  return '<aside class="veh">' +
+    '<div class="veh-head"><div class="flags">' +
+      '<span class="flag" data-on="' + f.wait + '" title="לקוח ממתין">' + ic('person', 17) + '</span>' +
+      '<span class="flag" data-on="' + f.access + '" title="רכב נכה">' + ic('access', 17) + '</span>' +
+      '<span class="flag" data-on="' + f.fresh + '" title="רכב חדש">' + ic('spark', 17) + '</span>' +
+      '<span class="flag" data-on="' + f.safety + '" title="תקלת בטיחות">' + ic('warn', 17) + '</span></div>' +
+      '<div style="display:flex;gap:16px"><div>כניסה<b>' + c.entry + '</b></div><div>סיום מובטח<b class="late">' + (c.late ? '<span class="dot-alert">!</span>' : '') + c.promised + '</b></div></div></div>' +
+    '<div class="veh-card"><div class="row"><span class="keycode">' + ic('key', 15) + c.key + '</span>' +
+      '<span class="wbadge' + (c.warranty ? '' : ' no') + '">' + ic('info', 12, 2.4) + (c.warranty ? 'באחריות' : 'לא באחריות') + '</span></div>' +
+      '<div class="car">' + mark(c.brand) + '<h2>' + esc((c.brand === 'VW' ? 'VW ' : '') + c.model) + '</h2><p>' + esc(c.trim) + '</p>' +
+      (S.editLoc === c.iron
+        ? '<div class="loc"><form data-form="loc"><input type="text" name="loc" value="' + esc(c.loc) + '" aria-label="מיקום חניה" data-focus><button class="mini-btn" type="submit">שמירה</button><button class="mini-btn ghost" type="button" data-act="loccancel">ביטול</button></form></div>'
+        : '<div class="loc">מיקום: <b>' + esc(c.loc) + '</b>' + (ro ? '' : '<button type="button" class="ibtn" style="width:24px;height:24px" data-act="locedit" aria-label="עריכת מיקום חניה">' + ic('pencil', 14) + '</button>') + '</div>') +
+      '</div>' +
+      '<div class="people"><div>לקוח<b><span class="phone-pop"><button type="button" class="ibtn" style="width:22px;height:22px" data-act="phone" aria-label="טלפונים">' + ic('phone', 14) + '</button>' +
+        (S.phoneOpen ? '<span class="pop"><div>בית <span>' + c.home + '</span></div><div>נייד <span>' + c.mobile + '</span></div></span>' : '') + '</span>' + esc(c.customer) + '</b></div>' +
+        '<div>יועצ/ת שירות<b>' + esc(c.advisor) + '</b></div></div></div>' +
+    '<div class="veh-meta"><div class="last">כניסה אחרונה - <b>' + c.last + '</b> ' + c.lastAgo + '<br><button type="button" class="linkish" data-act="vehicle" data-v="history">' + ic('history', 14) + 'היסטוריית כניסות ' + ic('chevL', 12, 2.2) + '</button></div>' +
+      '<div class="kv"><div>עלייה לכביש<b>' + c.road + '</b></div><div>ק"מ<b>' + c.km + '</b></div><div>מספר שלדה<b class="mono">' + c.vin + '</b></div><div>קוד מנוע<b class="mono">' + c.engine + '</b></div></div></div>' +
+    '<button type="button" class="full-btn" data-act="vehicle" data-v="car">פרטי רכב מלאים</button></aside>';
+}
+
+function reqRow(c, r, i, ro) {
+  var notes = r.notes.length ? '<div class="rnotes">' + r.notes.map(function (n) {
+    return '<div class="rnote"><span class="av">' + initials(n.by) + '</span><b>' + esc(n.by) + ' (' + n.id + ')</b><span>' + esc(n.t) + ' · ' + n.at + '</span></div>';
+  }).join('') + '</div>' : '';
+  return '<div class="req' + (r.done ? ' done' : '') + '"><div class="req-row">' +
+    '<button type="button" class="check" role="checkbox" aria-checked="' + r.done + '" aria-label="סימון ' + esc(r.t) + ' כטופל" data-act="toggle" data-v="' + i + '"' + (ro ? ' disabled' : '') + '>' + (r.done ? ic('check', 14, 2.6) : '') + '</button>' +
+    '<div class="rt">' + (r.tag === 'ext' ? '<span class="tag ext">' + esc(r.t) + '</span>' : esc(r.t)) + '<small>' + r.code + (r.tag === 'repeat' ? ' <span class="tag">תקלה חוזרת</span>' : '') + '</small></div>' +
+    '<div class="rd">' + esc(r.d) + '</div>' +
+    (r.ok ? '<span class="ok-badge">' + ic('check', 10, 3) + 'הלקוח אישר</span>' : '<span class="ok-badge wait">ממתין לאישור</span>') +
+    '<button type="button" class="ricon" data-act="notes" data-v="' + i + '" aria-label="הערות"' + (ro ? ' disabled' : '') + '>' + ic('note', 17) + (r.notes.length ? '<i>' + r.notes.length + '</i>' : '') + '</button>' +
+    '<button type="button" class="ricon" data-act="media" data-v="' + i + '" aria-label="מדיה"' + (ro ? ' disabled' : '') + '>' + ic('camera', 17) + (r.media ? '<i>' + r.media + '</i>' : '') + '</button>' +
+    '</div>' + notes + '</div>';
+}
+
+function paneHtml(c, ro) {
+  var t = S.wsTab;
+  if (t === 'req') {
+    return (ro ? '' : '<div class="req-tools"><button type="button" data-act="addreq">' + ic('plus', 15) + 'הוספת בקשת לקוח</button><button type="button" data-act="allnotes">' + ic('notes', 15) + 'צפייה בכל ההערות</button></div>') +
+      '<div class="reqs">' + c.reqs.map(function (r, i) { return reqRow(c, r, i, ro); }).join('') + '</div>';
+  }
+  if (t === 'parts') {
+    if (!c.parts.length) return '<p class="empty">עוד לא נופקו פריטים לכרטיס הזה</p>';
+    return '<table class="tbl"><thead><tr><th>תאריך</th><th>תיאור פריט</th><th>קוד פריט</th><th>כמות</th><th>נופק</th><th>סוג</th></tr></thead><tbody>' +
+      c.parts.map(function (p) { return '<tr><td>' + p[0] + '</td><td class="b">' + p[1] + '</td><td class="mono">' + p[2] + '</td><td class="b">' + p[3] + '</td><td class="b">' + p[4] + '</td><td><span class="chip' + (p[5] === 'alt' ? ' alt' : '') + '">' + (p[5] === 'alt' ? 'חלופי' : 'מקורי') + '</span></td></tr>'; }).join('') + '</tbody></table>';
+  }
+  if (t === 'story') {
+    if (!c.story.length) return '<p class="empty">אין עדיין אירועים בסיפור הכניסה</p>';
+    var lab = { ok: 'טופל', wait: 'בהמתנה', off: 'סגור' };
+    return '<table class="tbl"><thead><tr><th>תאריך</th><th>שעה</th><th>תיאור פעילות</th><th>גורם אחראי</th><th style="text-align:center">סטטוס</th></tr></thead><tbody>' +
+      c.story.map(function (s) { return '<tr><td>' + s[0] + '</td><td>' + s[1] + '</td><td class="b">' + esc(s[2]) + (s[3] ? '<small>' + esc(s[3]) + '</small>' : '') + '</td><td class="b">' + esc(s[4]) + '</td><td style="text-align:center"><span class="st ' + s[5] + '">' + (s[5] === 'ok' ? ic('check', 14, 2.2) : '') + '<span>' + lab[s[5]] + '</span></span></td></tr>'; }).join('') + '</tbody></table>';
+  }
+  if (!c.clock.length) return '<p class="empty">אין עדיין דיווחי שעות לכרטיס הזה</p>';
+  return '<table class="tbl"><thead><tr><th>שם</th><th>מס\' עובד</th><th>תאריך</th><th>משעה</th><th>עד שעה</th><th>זמן עבודה</th><th>יחידות זמן</th></tr></thead><tbody>' +
+    c.clock.map(function (k) { return '<tr><td class="b">' + esc(k[0]) + '</td><td>' + k[1] + '</td><td>' + k[2] + '</td><td>' + k[3] + '</td><td>' + k[4] + '</td><td class="b">' + k[5] + '</td><td class="b">' + k[6] + '</td></tr>'; }).join('') + '</tbody></table>';
+}
+
+function tabsHtml() {
+  var T = [['req', 'בקשות לקוח'], ['parts', 'פריטים שנופקו'], ['story', 'סיפור כניסה'], ['clock', 'היסטוריית קלוקינג']];
+  return '<div class="wtabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="wtab" aria-selected="' + (S.wsTab === t[0]) + '" data-act="wstab" data-v="' + t[0] + '">' + t[1] + '</button>'; }).join('') +
+    '<button type="button" class="pill-btn" data-act="elsa">' + ic('ext', 14) + 'Elsa2Go</button></div>';
+}
+
+function wsView() {
+  var c = C(S.active), allDone = c.reqs.every(function (r) { return r.done; });
+  var start = c.working.length
+    ? '<div><span class="who">' + c.working.map(esc).join(', ') + ' · מ-' + c.startedAt + '</span><button type="button" class="big-btn stop" data-act="stop">' + ic('stop', 16, 2) + 'סיום עבודה</button></div>' +
+      '<button type="button" class="add-worker" data-act="start">' + ic('plus', 13) + 'התחלת עבודה - עובד נוסף</button>'
+    : '<button type="button" class="big-btn" data-act="start">' + ic('play', 16, 2) + 'התחלת עבודה</button>';
+  var approve = c.review
+    ? '<button type="button" class="big-btn grey" disabled>נשלח לאישור</button>'
+    : '<button type="button" class="big-btn grey" data-act="approve"' + (allDone && !c.working.length ? '' : ' disabled title="אפשר לבקש אישור אחרי שכל הבקשות סומנו כטופלו והעבודה הסתיימה"') + '>אישור מנהל</button>';
+  return '<div class="ws">' + vehPanel(c) +
+    '<section class="main">' + tabsHtml() + '<div class="pane" role="tabpanel">' + paneHtml(c) + '</div>' +
+    '<div class="actions"><div class="act-start">' + start + '</div>' + approve + '</div></section></div>';
+}
+
+function searchView() {
+  var q = S.searchQ.trim(), res = [];
+  if (S.searchDone && q) res = S.cards.filter(function (c) { return (c.iron + ' ' + c.no + ' ' + c.plate.replace(/-/g, '') + ' ' + c.plate).indexOf(q.replace(/-/g, '')) >= 0 || c.plate.indexOf(q) >= 0; });
+  return '<div class="search"><h2>חיפוש כרטיס עבודה</h2>' +
+    '<form class="sfield" data-form="search">' + ic('search', 18) + '<input type="search" name="q" value="' + esc(S.searchQ) + '" placeholder="חיפוש לפי מספר ברזל / כרטיס עבודה / רישוי" aria-label="חיפוש כרטיס עבודה" data-focus></form>' +
+    (S.searchDone ? (res.length ? '<div class="results">' + res.map(function (c) {
+      return '<button type="button" class="result" data-act="pickresult" data-v="' + c.iron + '"><span style="display:flex;gap:8px;align-items:center"><span class="iron">' + c.iron + '</span><span class="cno">מס\' כרטיס<b>' + c.no + '</b></span></span><span></span><span class="plate y">' + c.plate + '</span><span style="display:flex;gap:10px;align-items:center"><span class="model">' + esc(c.model) + '<small>' + esc(c.trim) + '</small></span>' + mark(c.brand) + '</span></button>';
+    }).join('') + '</div>' : '<p class="hint">לא נמצא כרטיס. נסו 14, 09 או 599</p>') : '<p class="hint">לדוגמה: 14, 286811 או 599-89-966</p>') + '</div>';
+}
+
+// manager
+var STAT = [['waiting', 'בהמתנה', '#D63B3B'], ['before', 'לפני כניסה', '#333'], ['work', 'בעבודה', '#EBA33B'], ['done', 'הסתיימו', '#74B34A'], ['all', 'הכל', '#9E9E9E']];
+function mgrTop() {
+  var tabs = STAT.map(function (s) {
+    var n = s[0] === 'all' ? S.cards.length : S.cards.filter(function (c) { return c.status === s[0]; }).length;
+    return '<button type="button" role="tab" class="stab" aria-selected="' + (S.mgrTab === s[0]) + '" data-act="mgrtab" data-v="' + s[0] + '"><span class="cnt" style="background:' + s[2] + '">' + n + '</span>' + s[1] + '</button>';
+  }).join('');
+  var right = '<div class="views" role="group" aria-label="תצוגה"><button type="button" aria-pressed="' + (S.layout === 'cols') + '" data-act="layout" data-v="cols" aria-label="שורה">' + ic('cols', 15) + '</button><button type="button" aria-pressed="' + (S.layout === 'grid') + '" data-act="layout" data-v="grid" aria-label="רשת">' + ic('grid', 15) + '</button></div>' +
+    '<button type="button" class="ibtn" data-act="bell" aria-label="התראות">' + ic('bell', 19) + (S.unread ? '<span class="badge-n">' + S.unread + '</span>' : '') + '</button>' +
+    '<button type="button" class="ibtn" data-act="mgrsearch" aria-label="חיפוש">' + ic('search', 18) + '</button>';
+  return '<div class="top mtop"><div class="brand"><span class="logo">צ\'מפיון מוטורס</span><small>מנהל עבודה</small></div><div class="stabs" role="tablist">' + tabs + '</div>' + clockHtml(right) + '</div>';
+}
+function mcard(c, i) {
+  if (S.layout === 'grid') return mcardWide(c, i);
+  var f = c.flags, state = '', foot;
+  if (c.status === 'work') state = '<div class="mc-state"><span class="av">' + initials(c.worker || 'עובד') + '</span>בעבודה · ' + esc(c.worker) + '</div>';
+  if (c.status === 'done') state = c.review ? '<div class="mc-state">' + ic('info', 14) + 'ממתין לאישור שלך</div>' : '<div class="mc-state ok">' + ic('check', 14, 2.4) + 'אושר ונסגר</div>';
+  if (c.status === 'waiting') state = '<div class="mc-state">' + ic('info', 14) + 'ממתין לאישור לקוח</div>';
+  if (c.status === 'before') foot = '<button type="button" class="o" data-act="details" data-v="' + c.iron + '">פרטים מלאים</button><button type="button" class="f" data-act="assign" data-v="' + c.iron + '">הכנסה לעבודה</button>';
+  else if (c.status === 'done' && c.review) foot = '<button type="button" class="o" data-act="details" data-v="' + c.iron + '">פרטים מלאים</button><button type="button" class="f g" data-act="approveclose" data-v="' + c.iron + '">אישור וסגירה</button>';
+  else foot = '<button type="button" class="o" data-act="details" data-v="' + c.iron + '">פרטים מלאים</button>';
+  return '<div class="slot" data-iron="' + c.iron + '"><div class="pn">' + (i + 1) + '</div><article class="mcard"><span class="plate y">' + c.plate + '</span>' +
+    '<div class="mc-head"><div class="mc-id"><span class="iron">' + c.iron + '</span><span class="cno">מס\' כרטיס<b>' + c.no + '</b><small>' + esc(c.advisor) + '</small></span></div>' +
+      '<div class="flags">' + (f.wait ? '<span class="flag" title="לקוח ממתין">' + ic('person', 15) + '</span>' : '') + (f.access ? '<span class="flag" title="רכב נכה">' + ic('access', 15) + '</span>' : '') + (f.fresh ? '<span class="flag" title="רכב חדש">' + ic('spark', 15) + '</span>' : '') + (f.safety ? '<span class="flag" title="תקלת בטיחות">' + ic('warn', 15) + '</span>' : '') + '</div></div>' +
+    '<div class="mc-times"><span>כניסה: <b>' + c.entry + '</b></span><span>סיום מובטח: <b' + (c.late ? ' style="color:var(--red)"' : '') + '>' + c.promised + '</b></span></div>' +
+    '<div class="mc-car"><div class="row"><span class="wbadge' + (c.warranty ? '' : ' no') + '">' + (c.warranty ? 'באחריות' : 'לא באחריות') + '</span><span>' + esc(c.customer) + '</span></div>' +
+      '<div class="car">' + mark(c.brand) + '<h2>' + esc(c.model) + '</h2><p>' + esc(c.trim) + '</p></div>' +
+      '<div class="row"><span class="keycode">' + ic('key', 13) + c.key + '</span><span style="display:flex;gap:4px;align-items:center">' + ic('pin', 13) + esc(c.loc) + '</span></div></div>' +
+    state +
+    '<div class="mc-reqs">' + c.reqs.map(function (r) { return '<div class="mc-req' + (r.done ? ' done' : '') + '"><b>' + esc(r.t) + (r.tag === 'repeat' ? '<span class="tag">תקלה חוזרת</span>' : '') + '</b>' + esc(r.d) + '</div>'; }).join('') + '</div>' +
+    '<div class="mc-foot">' + foot + '</div></article></div>';
+}
+function mcardWide(c, i) {
+  var f = c.flags, foot = '<button type="button" class="o" data-act="details" data-v="' + c.iron + '">פרטים מלאים</button>';
+  if (c.status === 'before') foot += '<button type="button" class="f" data-act="assign" data-v="' + c.iron + '">הכנסה לעבודה</button>';
+  if (c.status === 'done' && c.review) foot += '<button type="button" class="f g" data-act="approveclose" data-v="' + c.iron + '">אישור וסגירה</button>';
+  var state = c.status === 'work' ? '<span class="wstate">בעבודה · ' + esc(c.worker) + '</span>' : c.status === 'waiting' ? '<span class="wstate">ממתין לאישור לקוח</span>' : c.status === 'done' ? '<span class="wstate ok">' + (c.review ? 'ממתין לאישור שלך' : 'אושר ונסגר') + '</span>' : '';
+  return '<div class="slot wide" data-iron="' + c.iron + '"><div class="pn">' + (i + 1) + '</div><article class="mcard wide"><span class="plate y">' + c.plate + '</span>' +
+    '<div class="wc-side"><div class="mc-head"><div class="mc-id"><span class="iron">' + c.iron + '</span><span class="cno">מס\' כרטיס<b>' + c.no + '</b><small>' + esc(c.advisor) + '</small></span></div></div>' +
+      '<div class="mc-times"><span>כניסה: <b>' + c.entry + '</b></span><span>סיום: <b' + (c.late ? ' style="color:var(--red)"' : '') + '>' + c.promised + '</b></span></div>' +
+      '<div class="mc-car"><div class="row"><span class="wbadge' + (c.warranty ? '' : ' no') + '">' + (c.warranty ? 'באחריות' : 'לא באחריות') + '</span><span>' + esc(c.customer) + '</span></div>' +
+      '<div class="car">' + mark(c.brand) + '<h2>' + esc(c.model) + '</h2><p>' + esc(c.trim) + '</p></div>' +
+      '<div class="row"><span class="keycode">' + ic('key', 13) + c.key + '</span><span style="display:flex;gap:4px;align-items:center">' + ic('pin', 13) + esc(c.loc) + '</span></div></div></div>' +
+    '<div class="wc-main"><div class="wc-top"><b>בקשות לקוח (' + c.reqs.length + ')</b><span class="flags">' + (f.wait ? '<span class="flag" title="לקוח ממתין">' + ic('person', 15) + '</span>' : '') + (f.access ? '<span class="flag" title="רכב נכה">' + ic('access', 15) + '</span>' : '') + (f.fresh ? '<span class="flag" title="רכב חדש">' + ic('spark', 15) + '</span>' : '') + (f.safety ? '<span class="flag" title="תקלת בטיחות">' + ic('warn', 15) + '</span>' : '') + '</span></div>' +
+      state +
+      '<div class="mc-reqs">' + c.reqs.map(function (r) { return '<div class="mc-req' + (r.done ? ' done' : '') + '"><b>' + esc(r.t) + (r.tag === 'repeat' ? '<span class="tag">תקלה חוזרת</span>' : '') + '</b>' + esc(r.d) + '</div>'; }).join('') + '</div>' +
+      '<div class="mc-foot">' + foot + '</div></div></article></div>';
+}
+function mgrView() {
+  var list = S.cards.filter(function (c) { return S.mgrTab === 'all' || c.status === S.mgrTab; }).sort(function (a, b) { return a.priority - b.priority; });
+  var drawerBody = S.drawer === 'workers'
+    ? WORKERS.map(function (w) { var c = S.cards.filter(function (x) { return x.worker === w.n && x.status === 'work'; })[0]; return '<button type="button" class="wk" data-s="' + w.s + '" data-act="worker" data-v="' + esc(w.n) + '"><span class="av">' + initials(w.n) + '</span><b>' + esc(w.n) + '</b><small>' + (c ? 'כרטיס ' + c.iron : (w.s === 'alert' ? 'ממתין לחלקים' : 'פנוי')) + '</small></button>'; }).join('')
+    : STATIONS.map(function (s, i) { var c = S.cards.filter(function (x) { return x.status === 'work'; })[i]; return '<div class="station"><b>' + s + '</b><small>' + (c ? c.model + ' · ' + c.plate : 'פנויה') + '</small></div>'; }).join('');
+  return '<div class="board"><div class="lane' + (S.layout === 'grid' ? ' grid' : '') + '">' + (list.length ? list.map(mcard).join('') : '<p class="empty" style="width:100%">אין כרטיסים בסטטוס הזה</p>') + '</div>' +
+    (S.assignFor ? '<div class="assign-msg">בחרו עובד פנוי לכרטיס ' + S.assignFor + '<button type="button" data-act="assigncancel">ביטול</button></div>' : '') +
+    '<div class="drawer' + (S.assignFor ? ' assign' : '') + '"><div class="dtabs" role="tablist"><button type="button" role="tab" class="dtab" aria-selected="' + (S.drawer === 'workers') + '" data-act="drawer" data-v="workers">עובדים</button><button type="button" role="tab" class="dtab" aria-selected="' + (S.drawer === 'stations') + '" data-act="drawer" data-v="stations">תחנות</button></div>' +
+    '<div class="dbody" dir="rtl">' + drawerBody + '</div></div>' +
+    (S.notifOpen ? '<div class="notif"><h3>התראות</h3>' + S.notifs.slice().reverse().map(function (n, i) { return '<div class="ni' + (n.fresh ? ' new' : '') + '"><b>' + esc(n.b) + '</b><span>' + esc(n.t) + '</span><time>' + n.at + '</time></div>'; }).join('') + '</div>' : '') +
+    '</div>';
+}
+
+// ── modals ──
+function shell(title, body, foot, cls, ctx) {
+  return '<div class="scrim' + (cls && cls.indexOf('wide') >= 0 ? ' center' : '') + '" data-act="scrim"><div class="modal ' + (cls || '') + '" role="dialog" aria-modal="true" aria-label="' + esc(title || 'חלון') + '">' +
+    '<div class="mhead"><h3>' + (title || '') + '</h3><button type="button" class="xbtn" data-act="close" aria-label="סגירה">' + ic('x', 18) + '</button></div>' +
+    (ctx || '') + '<div class="mbody">' + body + '</div>' + (foot ? '<div class="mfoot">' + foot + '</div>' : '') + '</div></div>';
+}
+function reqCtx(c, i) {
+  var r = c.reqs[i];
+  return '<div class="ctx" style="margin:0 20px">' +
+    '<button type="button" class="xbtn" data-act="reqnav" data-v="' + (i - 1) + '" aria-label="הבקשה הקודמת"' + (i ? '' : ' disabled style="opacity:.3"') + '>' + ic('chevR', 18) + '</button>' +
+    '<div class="rt">' + esc(r.t) + '<small>' + r.code + '</small></div><div class="rd">' + esc(r.d) + '</div>' +
+    '<button type="button" class="xbtn" data-act="reqnav" data-v="' + (i + 1) + '" aria-label="הבקשה הבאה"' + (i < c.reqs.length - 1 ? '' : ' disabled style="opacity:.3"') + '>' + ic('chevL', 18) + '</button></div>';
+}
+function identBody(title) {
+  var q = (S.identQ || '').trim();
+  var list = WORKERS.filter(function (w) { return !q || w.n.indexOf(q) >= 0 || w.id.indexOf(q) >= 0; });
+  var linked = q ? list : WORKERS.slice(0, 3);
+  return '<div class="ident"><button type="button" class="swipe" data-act="swipe">' + ic('badge', 30, 1.4) + 'העבר כרטיס</button><div class="or">או</div>' +
+    '<input type="search" placeholder="חיפוש לפי מס\' או שם עובד" aria-label="חיפוש עובד" value="' + esc(S.identQ || '') + '" data-input="identq" data-focus>' +
+    '<h4>' + (q ? 'תוצאות' : 'מקושרים לכרטיס עבודה') + '</h4>' +
+    linked.map(function (w) { return '<button type="button" class="wpick" data-act="identpick" data-v="' + esc(w.n) + '"><span class="av lg">' + initials(w.n) + '</span><span><small>עובד מס\' ' + w.id + '</small><b>' + esc(w.n) + '</b></span></button>'; }).join('') +
+    (q && !list.length ? '<p class="hint">לא נמצא עובד</p>' : '') + '</div>';
+}
+function openIdent(title, then) {
+  S.identQ = ''; S.identThen = then;
+  modal = function () { return shell(title, identBody(title), '', 'left'); };
+  render();
+}
+
+function openNotes(i) {
+  var c = C(S.active);
+  S.notesFor = i; S.noteBy = S.noteBy || ''; S.mtype = 'notes';
+  modal = function () {
+    var r = c.reqs[S.notesFor], body = r.notes.map(function (n, k) {
+      return '<div class="note-item"><span class="av lg">' + initials(n.by) + '</span><div><div class="note-bubble"><small>' + esc(n.by) + ' (עובד מס\' ' + n.id + ')</small>' + esc(n.t) + '</div><div class="note-meta">' + n.at + ' · ' + n.date + ' · <button type="button" data-act="delnote" data-v="' + k + '" style="color:var(--ink-3);text-decoration:underline;font-size:10px">מחיקה</button></div></div></div>';
+    }).join('');
+    if (S.noteBy) {
+      var w = W(S.noteBy);
+      body += '<div class="compose"><div class="by"><span class="av lg">' + initials(w.n) + '</span>' + esc(w.n) + '</div>' +
+        '<form data-form="note"><input type="text" name="t" placeholder="בחר או הקלד" aria-label="טקסט ההערה" value="' + esc(S.noteDraft || '') + '" data-focus><button class="black-btn" style="min-width:0;padding:7px 18px" type="submit">שמירה</button></form>' +
+        '<div class="lang">' + ic('chevD', 12) + 'עברית</div><div class="chips">' + CHIPS.map(function (t) { return '<button type="button" data-act="chip" data-v="' + esc(t) + '">' + esc(t) + '</button>'; }).join('') + '</div></div>';
+    } else body += '<button type="button" class="add-line" data-act="newnote">' + ic('plus', 15) + 'הוספת הערה חדשה</button>';
+    return shell('הערות בקשת לקוח', body, '<button type="button" class="black-btn" data-act="close">סיום</button>', 'left', reqCtx(c, S.notesFor));
+  };
+  render();
+}
+function openMedia(i) {
+  var c = C(S.active); S.mediaFor = i; S.mediaPick = 0; S.mtype = 'media';
+  modal = function () {
+    var r = c.reqs[S.mediaFor], n = r.media;
+    var body = n ? '<div class="media-main"><span class="ph">' + ic('img', 28, 1.4) + 'תמונה ' + (S.mediaPick + 1) + ' מתוך ' + n + '<small>' + esc(r.t) + '</small></span></div>' +
+      '<div class="thumbs">' + Array.apply(null, Array(Math.min(n, 5))).map(function (_, k) { return '<button type="button" class="thumb" aria-pressed="' + (S.mediaPick === k) + '" data-act="thumb" data-v="' + k + '" aria-label="תמונה ' + (k + 1) + '">' + ic(k === 4 ? 'play' : 'img', 18) + '</button>'; }).join('') + '</div>'
+      : '<p class="empty">' + ic('camera', 26, 1.4) + '<br>אין עדיין מדיה לבקשה הזו</p><button type="button" class="add-line" data-act="addmedia">' + ic('plus', 15) + 'צילום תמונה</button>';
+    return shell('מדיה בקשת לקוח', body, n ? '<button type="button" class="pill-btn" data-act="share">' + ic('share', 14) + 'שיתוף מדיה</button>' : '', 'left', reqCtx(c, S.mediaFor));
+  };
+  render();
+}
+function openAddReq() {
+  S.catPick = Object.keys(CATS)[0]; S.subPick = ''; S.catQ = '';
+  modal = function () {
+    var q = (S.catQ || '').trim(), keys = Object.keys(CATS), subs = [];
+    if (q) keys.forEach(function (k) { CATS[k].forEach(function (s) { if ((k + ' ' + s).indexOf(q) >= 0) subs.push([k, s]); }); });
+    var body = '<p class="lbl" style="margin-top:0">אפשר לחפש באופן חופשי</p><div class="msearch">' + ic('search', 16) + '<input type="search" placeholder="חיפוש בקשת לקוח" aria-label="חיפוש בקשת לקוח" value="' + esc(S.catQ) + '" data-input="catq" data-focus></div>' +
+      '<p class="lbl">או לבחור בקשת לקוח מרשימה</p>' +
+      (q ? '<div class="cats" style="grid-template-columns:1fr"><div>' + (subs.length ? subs.map(function (p) { return '<button type="button" data-act="sub" data-c="' + esc(p[0]) + '" data-v="' + esc(p[1]) + '" aria-pressed="' + (S.subPick === p[1]) + '">' + esc(p[0]) + ' · ' + esc(p[1]) + '</button>'; }).join('') : '<p class="hint" style="padding:10px">לא נמצאה בקשה</p>') + '</div></div>'
+        : '<div class="cats"><div>' + keys.map(function (k) { return '<button type="button" data-act="cat" data-v="' + esc(k) + '" aria-pressed="' + (S.catPick === k) + '">' + esc(k) + '</button>'; }).join('') + '</div><div>' + CATS[S.catPick].map(function (s) { return '<button type="button" data-act="sub" data-c="' + esc(S.catPick) + '" data-v="' + esc(s) + '" aria-pressed="' + (S.subPick === s) + '">' + esc(s) + '</button>'; }).join('') + '</div></div>');
+    return shell('הוספת הרחבת עבודה', body, '<button type="button" class="black-btn" data-act="savereq"' + (S.subPick ? '' : ' disabled') + '>שמירה וסיום</button>', 'left');
+  };
+  render();
+}
+function openFinish() {
+  modal = function () {
+    return shell('סיום עבודה', '<p style="margin:0 0 14px;color:var(--ink-2)">' + C(S.active).working.map(esc).join(', ') + ' · מ-' + C(S.active).startedAt + ' עד ' + now() + '</p><div class="finish-opts">' +
+      '<button type="button" data-act="finish" data-v="all">כל המשימות בכרטיס סגורות</button>' +
+      '<button type="button" data-act="finish" data-v="mine">ביצעתי את המשימות במחלקה שלי</button>' +
+      '<button type="button" data-act="finish" data-v="parts">ממתין לחלקים</button></div>', '', 'left');
+  };
+  render();
+}
+function openVehicle(tab) {
+  S.vtab = tab === 'history' ? 'history' : 'car';
+  S.backTo = S.detailsFor ? modal : null;
+  var iron = S.detailsFor || S.active;
+  modal = function () {
+    var c = C(iron), T = [['car', 'פרטי רכב'], ['history', 'היסטוריית טיפולים'], ['camp', 'קמפיינים']], body;
+    if (S.vtab === 'car') body = '<div class="kvgrid">' + [['מותג', c.brand === 'SK' ? 'סקודה' : c.brand === 'SE' ? 'סיאט' : 'פולקסווגן'], ['דגם', c.model + ' ' + c.trim], ['מס\' שלדה', c.vin, 1], ['קוד מנוע', c.engine, 1], ['שנת ייצור', '2023'], ['תאריך מסירה', '04/03/2023'], ['צבע', 'לבן'], ['ק"מ', c.km]].map(function (k) { return '<div>' + k[0] + '<b' + (k[2] ? ' class="mono"' : '') + '>' + esc(k[1]) + '</b></div>'; }).join('') + '</div>' +
+      '<div class="sec-h">אחריות</div><div class="kvgrid"><div>אחריות יצרן<b>' + (c.warranty ? 'עד 04/03/2026 או 150,000 ק"מ' : 'הסתיימה') + '</b></div><div>אחריות יבואן<b>' + (c.warranty ? 'עד 04/03/2028 או 200,000 ק"מ' : 'הסתיימה') + '</b></div></div>' +
+      '<div class="sec-h">קודי תוספות</div><table class="tbl"><thead><tr><th>קוד</th><th>תיאור תוספת</th></tr></thead><tbody><tr><td class="mono">GP1</td><td>חיישני חניה קדמיים</td></tr><tr><td class="mono">WA3</td><td>חבילת חורף</td></tr></tbody></table>';
+    else if (S.vtab === 'history') body = '<table class="tbl"><thead><tr><th>תאריך</th><th>מרכז שירות</th><th>תיאור</th><th>ק"מ</th><th>סטטוס</th></tr></thead><tbody>' +
+      [['18/10/25', 'מרכז שירות 88', 'מיזוג אוויר', '118,058'], ['07/06/25', 'מרכז שירות 95', 'טיפול תקופתי', '104,300'], ['12/01/25', 'מרכז שירות 88', 'חדירת מים בהפעלת מזגן', '92,410'], ['24/09/24', 'מרכז שירות 95', 'טיפול 15,000 + איפוס', '80,120']].map(function (r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td class="b">' + r[2] + '</td><td>' + r[3] + '</td><td><span class="st"><span>טופל</span></span></td></tr>'; }).join('') + '</tbody></table>';
+    else body = '<div class="sec-h" style="margin-top:0">קמפיינים פעילים לרכב</div><table class="tbl"><thead><tr><th>קוד</th><th>תיאור קמפיין</th><th>סוג</th></tr></thead><tbody><tr><td class="mono">97EQ</td><td class="b">עדכון תוכנה למערכת המולטימדיה</td><td>אחריות</td></tr></tbody></table>' +
+      '<div class="sec-h">קמפיינים שבוצעו לרכב</div><table class="tbl"><thead><tr><th>קוד</th><th>תיאור קמפיין</th><th>תאריך</th></tr></thead><tbody><tr><td class="mono">96</td><td class="b">בדיקת צינור ניקוז מים</td><td>18/10/25</td></tr></tbody></table>';
+    return shell('פרטי רכב · ' + c.plate, '<div class="vtabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="wtab" aria-selected="' + (S.vtab === t[0]) + '" data-act="vtab" data-v="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>' + body, '', 'wide');
+  };
+  render();
+}
+function openDetails(iron) {
+  var prevActive = S.active, prevTab = S.wsTab;
+  S.detailsFor = iron; S.wsTab = 'req';
+  modal = function () {
+    var c = C(S.detailsFor), keep = S.active; S.active = c.iron;
+    var h = shell('<span style="display:flex;align-items:center;gap:12px"><span class="iron" style="background:var(--dark)">' + c.iron + '</span><span class="cno">מס\' כרטיס<b>' + c.no + '</b></span><span class="plate y">' + c.plate + '</span>פרטי כרטיס עבודה</span>',
+      '<div class="ws" style="height:auto;padding:0">' + vehPanel(c, true) + '<section class="main">' + tabsHtml() + '<div class="pane">' + paneHtml(c, true) + '</div></section></div>', '', 'wide');
+    S.active = keep; return h;
+  };
+  S.restore = function () { S.active = prevActive; S.wsTab = prevTab; };
+  render();
+}
+function closeModal() {
+  if (S.backTo) { modal = S.backTo; S.backTo = null; render(); return; }
+  modal = null; S.detailsFor = ''; S.noteBy = ''; S.noteDraft = ''; if (S.restore) { S.restore(); S.restore = null; } render(); }
+
+function toast(t) {
+  var old = stage.querySelector('.toast'); if (old) old.remove();
+  var el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); el.textContent = t; stage.appendChild(el);
+  clearTimeout(toastT); toastT = setTimeout(function () { el.remove(); }, 2600);
+}
+function notify(b, t) { S.notifs.push({ b: b, t: t, at: now(), fresh: true }); S.unread++; }
+
+// ── actions ──
+function startWork(name) {
+  var c = C(S.active);
+  if (c.working.indexOf(name) < 0) c.working.push(name);
+  if (!c.startedAt) c.startedAt = now();
+  if (c.status === 'before' || c.status === 'waiting') { c.status = 'work'; c.worker = name; }
+  var w = W(name); if (w) w.s = 'busy';
+  closeModal(); toast(name + ' התחיל/ה עבודה על כרטיס ' + c.iron);
+}
+function dur(from, to) {
+  var a = from.split(':'), b = to.split(':'), m = (+b[0] * 60 + +b[1]) - (+a[0] * 60 + +a[1]); if (m < 1) m = 1;
+  return [Math.floor(m / 60) + ':' + pad(m % 60), (m / 60).toFixed(2)];
+}
+
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  var a = el.dataset.act, v = el.dataset.v, c = C(S.active);
+  if (a === 'scrim') { if (e.target === el) closeModal(); return; }
+  if (S.phoneOpen && a !== 'phone') { S.phoneOpen = false; }
+  if (S.notifOpen && a !== 'bell') { S.notifOpen = false; }
+  switch (a) {
+    case 'role': S.role = 'app'; S.view = v; modal = null; S.assignFor = ''; break;
+    case 'opencard': S.active = v; S.view = 'ws'; S.wsTab = 'req'; break;
+    case 'newcard': S.view = 'search'; S.searchQ = ''; S.searchDone = false; break;
+    case 'refresh': toast('הנתונים עודכנו'); break;
+    case 'pickresult': if (S.open.indexOf(v) < 0) S.open.push(v); S.active = v; S.view = 'ws'; S.wsTab = 'req'; break;
+    case 'wstab': S.wsTab = v; break;
+    case 'elsa': toast('במערכת האמיתית נפתח כאן ELSA2Go, מערכת המידע הטכני של היצרן'); return;
+    case 'locedit': S.editLoc = c.iron; break;
+    case 'loccancel': S.editLoc = ''; break;
+    case 'phone': S.phoneOpen = !S.phoneOpen; break;
+    case 'toggle': c.reqs[+v].done = !c.reqs[+v].done; break;
+    case 'notes': openNotes(+v); return;
+    case 'media': openMedia(+v); return;
+    case 'reqnav': if (S.mtype === 'media') { S.mediaFor = +v; S.mediaPick = 0; } else { S.notesFor = +v; S.noteBy = ''; } break;
+    case 'newnote': openIdent('מי מזין את ההערה?', function (n) { S.noteBy = n; openNotes(S.notesFor); }); return;
+    case 'chip': S.noteDraft = v; break;
+    case 'delnote': c.reqs[S.notesFor].notes.splice(+v, 1); break;
+    case 'thumb': S.mediaPick = +v; break;
+    case 'addmedia': c.reqs[S.mediaFor].media = 1; S.mediaPick = 0; toast('התמונה נשמרה לבקשה'); break;
+    case 'share': toast('קישור למדיה נשלח ליועצ/ת השירות'); return;
+    case 'allnotes': S.wsTab = 'req'; var withN = c.reqs.filter(function (r) { return r.notes.length; }).length; toast(withN ? withN + ' בקשות עם הערות, ההערות מופיעות מתחת לכל בקשה' : 'עדיין אין הערות בכרטיס הזה'); break;
+    case 'addreq': openAddReq(); return;
+    case 'cat': S.catPick = v; S.subPick = ''; break;
+    case 'sub': S.catPick = el.dataset.c; S.subPick = v; break;
+    case 'savereq': c.reqs.push(R('הרחבת עבודה', '99001' + (300 + c.reqs.length), S.catPick + ' · ' + S.subPick, { tag: 'ext', ok: false }));
+      c.story.push([today().slice(0, 6) + today().slice(8), now(), 'הרחבת עבודה: ' + S.subPick, 'נשלח ללקוח לאישור', 'מיכל שגיא', 'wait']);
+      notify('הרחבת עבודה', 'כרטיס ' + c.iron + ': ' + S.subPick + ' · ממתין לאישור לקוח');
+      closeModal(); toast('הבקשה נוספה ונשלחה ללקוח לאישור'); return;
+    case 'start': openIdent(c.working.length ? 'עובד נוסף' : 'מי מתחיל לעבוד?', startWork); return;
+    case 'swipe': var pick = WORKERS.filter(function (w) { return c.working.indexOf(w.n) < 0; })[0]; S.identThen(pick.n); return;
+    case 'identpick': S.identThen(v); return;
+    case 'stop': openFinish(); return;
+    case 'finish':
+      var to = now(), d = dur(c.startedAt, to);
+      c.working.forEach(function (n) { var w = W(n); c.clock.push([n, w ? w.id : '', today().slice(0, 6) + today().slice(8), c.startedAt, to, d[0], d[1]]); if (w) w.s = v === 'parts' ? 'alert' : 'free'; });
+      var lab = { all: 'כל המשימות בכרטיס סגורות', mine: 'המשימות במחלקה בוצעו', parts: 'ממתין לחלקים' }[v];
+      c.story.push([today().slice(0, 6) + today().slice(8), to, 'סיום עבודה: ' + lab, c.working.join(', '), c.working[0], v === 'parts' ? 'wait' : 'ok']);
+      if (v === 'parts') { c.status = 'waiting'; notify('ממתין לחלקים', 'כרטיס ' + c.iron + ' · ' + c.model + ' ' + c.plate); }
+      c.working = []; c.startedAt = null;
+      S.wsTab = 'clock'; closeModal(); toast('השעות נרשמו בהיסטוריית הקלוקינג'); return;
+    case 'approve': c.review = true; c.status = 'done'; notify('כרטיס מוכן לאישור', 'כרטיס ' + c.iron + ' · ' + c.model + ' ' + c.plate + ' סיים את כל הבקשות'); toast('נשלח לאישור מנהל העבודה'); break;
+    case 'vehicle': openVehicle(v); return;
+    case 'vtab': S.vtab = v; break;
+    case 'close': closeModal(); return;
+    // manager
+    case 'mgrtab': S.mgrTab = v; break;
+    case 'layout': S.layout = v; break;
+    case 'bell': S.notifOpen = !S.notifOpen; if (S.notifOpen) S.unread = 0; else S.notifs.forEach(function (n) { n.fresh = false; }); break;
+    case 'mgrsearch': S.view = 'search'; S.searchQ = ''; S.searchDone = false; break;
+    case 'drawer': S.drawer = v; break;
+    case 'details': openDetails(v); return;
+    case 'assign': S.assignFor = v; S.drawer = 'workers'; break;
+    case 'assigncancel': S.assignFor = ''; break;
+    case 'worker':
+      var w = W(v);
+      if (S.assignFor) {
+        if (w.s !== 'free') { toast(v + ' לא פנוי/ה כרגע'); return; }
+        var ac = C(S.assignFor); ac.status = 'work'; ac.worker = v; w.s = 'busy'; S.assignFor = '';
+        toast('כרטיס ' + ac.iron + ' הוכנס לעבודה · ' + v); break;
+      }
+      var wc = S.cards.filter(function (x) { return x.worker === v && x.status === 'work'; })[0];
+      toast(v + ' · עובד מס\' ' + w.id + (wc ? ' · עובד/ת על כרטיס ' + wc.iron : (w.s === 'alert' ? ' · ממתין/ה לחלקים' : ' · פנוי/ה'))); return;
+    case 'approveclose': C(v).review = false; toast('כרטיס ' + v + ' אושר ונסגר'); break;
+  }
+  render();
+});
+document.addEventListener('input', function (e) {
+  var k = e.target.dataset.input; if (!k) return;
+  var pos = e.target.selectionStart;
+  if (k === 'identq') S.identQ = e.target.value; if (k === 'catq') { S.catQ = e.target.value; S.subPick = ''; }
+  render();
+  var el = app.querySelector('[data-input="' + k + '"]'); if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch (x) {} }
+});
+document.addEventListener('submit', function (e) {
+  var f = e.target.dataset.form; if (!f) return; e.preventDefault();
+  var c = C(S.active), val = (e.target.elements[0].value || '').trim();
+  if (f === 'loc') { if (val) c.loc = val; S.editLoc = ''; toast('מיקום החניה עודכן'); }
+  if (f === 'search') { S.searchQ = val; S.searchDone = true; }
+  if (f === 'note') {
+    if (!val) return; var w = W(S.noteBy);
+    c.reqs[S.notesFor].notes.push({ by: w.n, id: w.id, t: val, at: now(), date: today() }); S.noteBy = ''; S.noteDraft = '';
+  }
+  render();
+});
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (D && D.on) dragEnd(null, true); else if (modal) closeModal(); else if (S.assignFor || S.notifOpen) { S.assignFor = ''; S.notifOpen = false; render(); } } });
+
+// ── fit the 1280px floor screen into any window ──
+/* ── drag and drop on the manager board: drag between cards to change priority,
+      or onto a free worker to put the card into work. While dragging, a small card
+      shows only the plate, the brand and the model, as in the original wireframe. ── */
+var D = null, RM = matchMedia('(prefers-reduced-motion: reduce)');
+app.addEventListener('pointerdown', function (e) {
+  var card = e.target.closest('.lane .mcard');
+  if (!card || modal || e.button > 0 || e.target.closest('button, a, input')) return;
+  D = { slot: card.parentNode, iron: card.parentNode.getAttribute('data-iron'), x: e.clientX, y: e.clientY, cx: e.clientX, cy: e.clientY, id: e.pointerId, touch: e.pointerType === 'touch', on: false };
+  if (D.touch) D.timer = setTimeout(function () { if (D && !D.on) dragStart(); }, 300);
+});
+document.addEventListener('pointermove', function (e) {
+  if (!D || e.pointerId !== D.id) return;
+  D.cx = e.clientX; D.cy = e.clientY;
+  if (!D.on) {
+    var moved = Math.abs(D.cx - D.x) + Math.abs(D.cy - D.y);
+    if (D.touch) { if (moved > 10) { clearTimeout(D.timer); D = null; } return; }
+    if (moved < 6) return;
+    dragStart();
+  }
+  dragMove();
+});
+document.addEventListener('touchmove', function (e) { if (D && D.on) e.preventDefault(); }, { passive: false });
+document.addEventListener('pointerup', function (e) { dragEnd(e, false); });
+document.addEventListener('pointercancel', function (e) { dragEnd(e, true); });
+addEventListener('blur', function () { if (D) dragEnd(null, true); });
+function dragStart() {
+  var c = C(D.iron);
+  if (S.drawer !== 'workers' || S.notifOpen || S.assignFor) { S.drawer = 'workers'; S.notifOpen = false; S.assignFor = ''; render(); D.slot = app.querySelector('.slot[data-iron="' + D.iron + '"]'); }
+  D.on = true; D.z = app.getBoundingClientRect().width / app.offsetWidth || 1;
+  D.lane = D.slot.parentNode; D.order = slotIrons(D.lane).join();
+  D.canAssign = c.status === 'before' || c.status === 'waiting';
+  D.slot.classList.add('dragging');
+  document.body.classList.add('dragmode');
+  if (D.canAssign) document.body.classList.add('dragassign');
+  D.g = document.createElement('div'); D.g.className = 'drag-ghost'; D.g.setAttribute('aria-hidden', 'true');
+  D.g.innerHTML = '<div class="gi"><span class="plate y">' + c.plate + '</span><div class="mc-car"><div class="car">' + mark(c.brand) + '<h2>' + esc(c.model) + '</h2><p>' + esc(c.trim) + '</p></div></div></div>';
+  document.body.appendChild(D.g);
+  var msg = document.createElement('div'); msg.className = 'assign-msg drag-msg';
+  msg.textContent = D.canAssign ? 'גררו בין הכרטיסים כדי לשנות עדיפות, או לעובד פנוי כדי להכניס לעבודה' : 'גררו בין הכרטיסים כדי לשנות עדיפות';
+  D.lane.parentNode.appendChild(msg);
+  D.raf = requestAnimationFrame(autoScroll);
+}
+function slotIrons(lane) { return [].map.call(lane.querySelectorAll('.slot'), function (n) { return n.getAttribute('data-iron'); }); }
+function dragMove() {
+  D.g.style.transform = 'translate(' + (D.cx - 125 * D.z) + 'px,' + (D.cy - 30 * D.z) + 'px) scale(' + D.z + ')';
+  var el = document.elementFromPoint(D.cx, D.cy), wk = el && el.closest('.wk'), slot = el && el.closest('.lane .slot');
+  if (wk !== D.wk) {
+    if (D.wk) D.wk.classList.remove('drop', 'nodrop');
+    D.wk = wk;
+    if (wk) wk.classList.add(D.canAssign && wk.getAttribute('data-s') === 'free' ? 'drop' : 'nodrop');
+  }
+  D.g.classList.toggle('over-wk', !!wk);
+  if (slot && slot !== D.slot) {
+    if (slot === D.last) return;
+    D.last = slot;
+    var all = [].slice.call(D.lane.children), a = all.indexOf(D.slot), b = all.indexOf(slot);
+    var before = all.map(function (n) { return n.getBoundingClientRect(); });
+    D.lane.insertBefore(D.slot, a < b ? slot.nextSibling : slot);
+    all.forEach(function (n, i) {
+      var r = n.getBoundingClientRect(), dx = (before[i].left - r.left) / D.z, dy = (before[i].top - r.top) / D.z;
+      if ((dx || dy) && !RM.matches && n.animate) n.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    });
+    [].forEach.call(D.lane.querySelectorAll('.slot > .pn'), function (p, i) { p.textContent = i + 1; });
+  } else if (!slot) D.last = null;
+}
+function autoScroll() {
+  if (!D || !D.on) return;
+  var r = D.lane.getBoundingClientRect(), edge = 80 * D.z, v = 0;
+  if (!D.wk && D.cy > r.top && D.cy < r.bottom) { if (D.cx < r.left + edge) v = -16; else if (D.cx > r.right - edge) v = 16; }
+  if (v) { var s0 = D.lane.scrollLeft; D.lane.scrollLeft += v; if (D.lane.scrollLeft !== s0) dragMove(); }
+  D.raf = requestAnimationFrame(autoScroll);
+}
+function dragEnd(e, cancel) {
+  if (!D || (e && e.pointerId !== D.id)) return;
+  clearTimeout(D.timer);
+  var d = D; D = null;
+  if (!d.on) return;
+  cancelAnimationFrame(d.raf);
+  d.g.remove();
+  document.body.classList.remove('dragmode', 'dragassign');
+  var swallow = function (ev) { ev.stopPropagation(); ev.preventDefault(); };
+  window.addEventListener('click', swallow, true); setTimeout(function () { window.removeEventListener('click', swallow, true); }, 0);
+  if (cancel) { render(); return; }
+  var irons = slotIrons(d.lane), moved = irons.join() !== d.order, c = C(d.iron);
+  if (moved) {
+    var pr = irons.map(function (i) { return C(i).priority; }).sort(function (a, b) { return a - b; });
+    irons.forEach(function (i, k) { C(i).priority = pr[k]; });
+  }
+  if (d.wk) {
+    var w = W(d.wk.getAttribute('data-v'));
+    if (!d.canAssign) toast('רק כרטיס שלפני כניסה או ממתין אפשר להכניס לעבודה');
+    else if (w.s !== 'free') toast(w.n + ' לא פנוי/ה כרגע');
+    else { c.status = 'work'; c.worker = w.n; w.s = 'busy'; toast('כרטיס ' + c.iron + ' הוכנס לעבודה · ' + w.n); }
+  } else if (moved) toast('העדיפות עודכנה · כרטיס ' + c.iron + ' במקום ' + (irons.indexOf(c.iron) + 1));
+  render();
+}
+function fit() {
+  var w = stage.clientWidth, h = stage.clientHeight, z = Math.min(1, w / 1280);
+  app.style.transform = z < 1 ? 'scale(' + z + ')' : '';
+  app.style.height = (h / z) + 'px';
+  app.style.width = Math.min(Math.max(1280, w), 1680) + 'px';
+  app.style.right = w > 1680 ? ((w - 1680) / 2) + 'px' : '0';
+  var note = stage.querySelector('.narrow-note');
+  if (w < 760 && !S.narrowDismissed && !note) {
+    note = document.createElement('div'); note.className = 'narrow-note';
+    note.innerHTML = '<span>Built for the workshop\'s large touch screens. It works here too, but it reads best on a desktop or tablet.</span><button type="button">OK</button>';
+    note.querySelector('button').onclick = function () { S.narrowDismissed = true; note.remove(); };
+    stage.appendChild(note);
+  }
+}
+addEventListener('resize', fit);
+if (location.hash === '#manager') { S.role = 'app'; S.view = 'mgr'; } else if (location.hash === '#mechanic') { S.role = 'app'; S.view = 'ws'; }
+render(); fit();
+// opened from the case study in its own tab: "back" closes this tab, so the case isn't opened twice
+var back = document.querySelector('.fbar a');
+if (back) back.addEventListener('click', function (e) {
+  if (history.length > 1) return;
+  e.preventDefault(); window.close();
+  setTimeout(function () { location.href = back.href; }, 150);   // if the browser won't close it, go back to the case here
+});
+setInterval(function () { if (!modal) { var b = app.querySelector('.clock b'); if (b) b.textContent = now(); } }, 20000);
+})();
+</script>
+</body>
+</html>

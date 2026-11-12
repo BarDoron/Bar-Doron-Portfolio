@@ -45,8 +45,10 @@
     else if (/linkedin\.com/.test(h)) ev('linkedin_click');
     else if (/\.pdf(\?|#|$)/.test(h)) ev('cv_open');
     else if (/spotify\.com|youtube\.com|youtu\.be/.test(h)) ev('media_open');
-    else if (/(champion-motors|swiftness|gigaspaces|ux-library)\.html/.test(h)) ev('case_open_' + h.match(/([a-z-]+)\.html/)[1]);
+    else if (/(champion-motors|swiftness|gigaspaces|ux-library|champion-prototype)\.html/.test(h)) ev((/prototype/.test(h) ? 'prototype_open_' : 'case_open_') + h.match(/([a-z-]+)\.html/)[1].replace('-prototype', ''));
     if (t.closest('.pod-btn, .pod-float')) ev('podcast_play', true);
     if (t.closest('.aic')) ev('ai_card_touch', true);
+    if (t.closest('.cw-shot')) ev('claude_shot_open', true);
+    if (t.closest('.cw-live')) ev('rail_video_open');
   }, true);
 })();
