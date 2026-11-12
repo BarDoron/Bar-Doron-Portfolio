@@ -87,7 +87,7 @@
 @media (hover: hover) { .cw-shot:hover .cw-zoom { transform: rotate(-10deg) scale(1.12); } }
 /* the last card: there's more where these came from */
 .cw-frame-more { display: grid; place-items: center; border: 2px dashed var(--border-strong); background: transparent; box-shadow: none; }
-.cw-card-more:hover .cw-frame { box-shadow: none; }
+.cw-card-more:hover .cw-frame, [data-theme="dark"] .cw-frame-more { box-shadow: none; }   /* dashed outline only, no white ring, in both themes */
 /* always at work: a spinning spark and a shimmering status line, like Claude while it builds */
 .cw-working { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .cw-spark { width: 46px; height: 46px; color: var(--accent); animation: cw-spin 2.4s cubic-bezier(.5,.1,.5,.9) infinite; }
