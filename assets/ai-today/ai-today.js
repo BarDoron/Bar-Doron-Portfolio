@@ -291,6 +291,48 @@
     };
   })();
 
+  // ══ UX LIBRARY ════════════════════════════
+
+  // 02 · wireframe from a brief: built only from the kit, every state, both directions
+  const UXW = () => (() => {
+    const s = seq(), [, q, qq] = scoped('uxw'), cv = q('#uxwCanvas'), input = q('#uxwIn'), typed = q('#uxwTyped'), ph = q('#uxwPh');
+    const BRIEF = 'Orders screen for a dispatcher: search, status filter, table. Hebrew.';
+    const parts = () => qq('.wf').filter(p => !p.closest('.uxw-empty, .uxw-err'));   // the default screen, built piece by piece
+    // the empty and error screens are made of library parts too: name them while they show
+    const stateParts = (v) => { const sel = v === 'empty' ? '.uxw-empty' : v === 'err' ? '.uxw-err' : ''; return sel ? qq(`${sel}.wf, ${sel} .wf`) : []; };
+    const state = (v) => { cv.dataset.s = v; qq('#uxwStates button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.s === v))); };
+    const dir = (d) => {
+      cv.dir = d; cv.lang = d === 'rtl' ? 'he' : 'en';
+      qq('#uxwDir button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.d === d)));
+      qq('[data-he]', cv).forEach(el => { el.textContent = el.dataset[d === 'rtl' ? 'he' : 'en']; });
+    };
+    const flipTo = async (d, wait) => { cv.style.opacity = '0'; await wait(220); dir(d); cv.style.opacity = '1'; };
+    const clean = () => { cv.classList.remove('building'); qq('.wf').forEach(p => p.classList.remove('in', 'lbl')); cv.style.opacity = ''; typed.textContent = BRIEF; ph.hidden = true; input.classList.remove('focus'); };
+    const build = async (wait) => {
+      state('def'); dir('rtl'); cv.classList.add('building'); parts().forEach(p => p.classList.remove('in', 'lbl'));
+      await press(q('#uxwGo'), wait); await wait(200);
+      for (const p of parts()) { p.classList.add('in', 'lbl'); await wait(520); p.classList.remove('lbl'); }
+      cv.classList.remove('building');
+    };
+    return {
+      s,
+      rest() { clean(); state('def'); dir('rtl'); typed.textContent = BRIEF; ph.hidden = true; input.classList.remove('focus'); },
+      async play(wait) {
+        clean(); state('def'); dir('rtl'); cv.classList.add('building'); typed.textContent = ''; ph.hidden = false; await wait(400);
+        input.classList.add('focus'); ph.hidden = true; await typeText(typed, BRIEF, wait, 28); await wait(300); input.classList.remove('focus');
+        await build(wait); await wait(900);
+        for (const v of ['empty', 'err', 'def']) { await press(q(`#uxwStates [data-s="${v}"]`), wait); state(v); const sp = stateParts(v); sp.forEach(p => p.classList.add('lbl')); await wait(v === 'def' ? 1500 : 2200); sp.forEach(p => p.classList.remove('lbl')); }
+        await press(q('#uxwDir [data-d="ltr"]'), wait); await flipTo('ltr', wait); await wait(2000);
+        await flipTo('rtl', wait); await wait(800);
+      },
+      bind(take) {
+        q('#uxwStates').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; take(); clean(); state(b.dataset.s); });
+        q('#uxwDir').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; take(); clean(); dir(b.dataset.d); });
+        q('#uxwGo').addEventListener('click', () => { take(); typed.textContent = BRIEF; ph.hidden = true; const w = s.start(); build(w).catch(() => {}); });
+      },
+    };
+  })();
+
   // ══ the switching card ════════════════════
   // In view it plays each idea's demo, then moves to the next. Picking an idea or tapping inside the print hands over.
   const card = (id, scenes, durs) => {
@@ -336,11 +378,12 @@
       els.forEach((e, k) => { e.classList.toggle('on', k === i); e.inert = k !== i; });
       if (phone.matches) els.forEach(e => { e.inert = false; });
     };
-    const label = () => { stage.classList.toggle('is-manual', !auto); state.textContent = reduce ? 'Reduced motion · pick an idea' : !auto ? 'Your turn · try the controls' : played ? 'Pick the other idea to see it' : phone.matches ? 'Playing · tap to take over' : 'Playing both · tap to take over'; };
+    const one = scenes.length === 1;
+    const label = () => { stage.classList.toggle('is-manual', !auto); state.textContent = reduce ? (one ? 'Reduced motion · try the controls' : 'Reduced motion · pick an idea') : !auto ? 'Your turn · try the controls' : played ? (one ? 'Your turn · try the controls' : 'Pick the other idea to see it') : (phone.matches || one) ? 'Playing · tap to take over' : 'Playing both · tap to take over'; };
     const run = async () => {
       stopAll(); const wait = s.start();
       played = false; label();
-      try { for (;;) { show(idx); prog(idx, durs[idx]); await Promise.all([scenes[idx].play(wait), wait(durs[idx])]); await wait(500); if (phone.matches) { played = true; label(); return; } idx = (idx + 1) % scenes.length; } } catch (e) {}
+      try { for (;;) { show(idx); prog(idx, durs[idx]); await Promise.all([scenes[idx].play(wait), wait(durs[idx])]); await wait(500); if (phone.matches || one) { played = true; label(); return; } idx = (idx + 1) % scenes.length; } } catch (e) {}
     };
     const take = () => { stopAll(); once = false; if (auto) { auto = false; label(); } prog(idx, 'full'); };
     const pick = (i) => {
@@ -378,4 +421,5 @@
   init('aic-champion', [CH, CHP], [13000, 10500]);
   init('aic-swiftness', [SW, SWL], [17500, 9500]);
   init('aic-gigaspaces', [GG, GGN], [10000, 10000]);
+  init('aic-uxlibrary', [UXW], [15500]);
 })();

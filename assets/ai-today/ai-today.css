@@ -52,6 +52,10 @@
 .aic .idea-panel.open { grid-template-rows: 1fr; opacity: 1; }
 .aic .idea-panel > div { overflow: hidden; padding-inline-start: 40px; }
 .aic .idea-panel p { margin: 0; padding: 2px 0 18px; max-width: 44ch; font-size: 13.5px; color: var(--ink-2); }
+/* one idea only: no number, the copy sits flush */
+.aic .ideas.single .idea { grid-template-columns: minmax(0, 1fr); }
+.aic .ideas.single .idea-n { display: none; }
+.aic .ideas.single .idea-panel > div { padding-inline-start: 0; }
 .aic .scenes { display: grid; min-height: 540px; }
 .aic .scene { grid-area: 1 / 1; display: flex; flex-direction: column; min-width: 0; opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s; }
 .aic .scene.on { opacity: 1; visibility: visible; transition: opacity .35s ease; }
@@ -440,6 +444,76 @@
 .aic .ggr-pubd { font-weight: 700; color: var(--ok); }
 .aic .gg-pill.ok { background: var(--ok); }
 
+/* ── UX Library ──────────────────────────── */
+.aic .uxw { display: flex; flex-direction: column; }
+.aic .ux-tabs { margin-inline-start: auto; display: inline-flex; background: var(--ui-soft); border: 1px solid var(--ui-line); border-radius: 8px; padding: 2px; }
+.aic .ux-tabs button { border: 0; background: none; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--ui-mute); }
+.aic .ux-tabs button[aria-selected="true"] { background: var(--ui); color: var(--ui-text); box-shadow: 0 1px 2px rgba(16,24,40,.12); }
+.aic .ux-brief { display: flex; gap: 8px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--ui-line); }
+.aic .ux-brief .sw-input { flex: 1; min-width: 0; min-height: 36px; padding: 7px 11px; border-radius: 10px; font-size: 12.5px; }
+.aic .ux-brief .sw-input > span:first-child, .aic .ux-brief .sw-ph { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.aic .ux-brief .btn { flex: none; }
+/* 01 · the system sets itself up */
+.aic .ux-draft i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--warn); }
+.aic .ux-draft { margin-inline-start: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ui-mute); }
+/* 02 · wireframe from a brief: grey and one blue, the kit's own look */
+.aic .uxw-body { flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--ui-soft); padding: 10px; gap: 8px; }
+.aic .uxw-canvas { flex: 1; min-height: 0; overflow: hidden; position: relative; background: #fff; border: 1px solid var(--ui-line); border-radius: 6px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; font-size: 12px; color: #3A3F48; }
+.aic .uxw-canvas[dir="rtl"] { font-family: var(--fu-he); }
+/* any Hebrew in the demos (the עב toggle too) takes the Hebrew stack: in iOS Safari the UI stack fell on an Arabic face and drew empty boxes */
+.aic [lang="he"], .aic .ui [lang="he"] { font-family: var(--fu-he); }
+.aic .wf { position: relative; transition: opacity .35s ease, transform .35s ease; }
+.aic .uxw-canvas.building .wf { opacity: 0; transform: translateY(6px); }
+.aic .uxw-canvas.building .wf.in { opacity: 1; transform: none; }
+.aic .wf::after { content: attr(data-k); position: absolute; top: -9px; left: -4px; z-index: 2; font: 600 9.5px/1 var(--fu); letter-spacing: .02em; color: #fff; background: var(--sw); border-radius: 3px; padding: 3px 5px; box-shadow: 0 0 0 1.5px #fff, 0 2px 6px rgba(16, 24, 40, .28); white-space: nowrap; opacity: 0; transform: translateY(3px); transition: opacity .25s, transform .25s; pointer-events: none; direction: ltr; }
+.aic .uxw-canvas[dir="rtl"] .wf::after { left: auto; right: -4px; }
+/* parts at the far edge hang their label the other way, so it never leaves the canvas */
+.aic .wf.end::after { left: auto; right: -4px; }
+.aic .uxw-canvas[dir="rtl"] .wf.end::after { right: auto; left: -4px; }
+.aic .wf.lbl::after, .aic .uxw-canvas:hover .wf::after { opacity: 1; transform: none; }
+.aic .wf.lbl { outline: 1.5px solid var(--sw); outline-offset: 3px; border-radius: 4px; }
+.aic .uxw-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.aic .uxw-head h4 { margin: 0; font-size: 16px; font-weight: 700; color: #1E2430; }
+.aic .wf-btn { display: inline-flex; align-items: center; border-radius: 6px; padding: 6px 12px; font-size: 11.5px; font-weight: 600; background: var(--sw); color: #fff; white-space: nowrap; }
+.aic .wf-btn.ghost { background: #fff; color: #1E2430; border: 1px solid #C9CED6; }
+.aic .uxw-filters { display: flex; gap: 8px; }
+.aic .wf-field { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #C9CED6; border-radius: 6px; color: #8A909B; white-space: nowrap; }
+.aic .wf-field.dd { flex: 0 0 auto; color: #3A3F48; }
+.aic .wf-field.search::before { content: ""; flex: none; width: 13px; height: 13px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%238A909B' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='4.6'/%3E%3Cpath d='M10.4 10.4 14 14'/%3E%3C/svg%3E") center / contain no-repeat; }
+.aic .uxw-canvas[dir="rtl"] .wf-field.search::before { transform: scaleX(-1); }
+.aic .wf-field.dd::before { order: 1; content: ""; width: 6px; height: 6px; border-right: 1.5px solid #8A909B; border-bottom: 1.5px solid #8A909B; transform: rotate(45deg) translateY(-2px); margin-inline-start: 6px; }
+.aic .uxw-main { flex: 1; min-height: 0; display: grid; }
+.aic .uxw-main > * { grid-area: 1 / 1; min-width: 0; transition: opacity .3s ease; }
+.aic .uxw-canvas:not([data-s="def"]) .uxw-table, .aic .uxw-canvas:not([data-s="empty"]) .uxw-empty, .aic .uxw-canvas:not([data-s="err"]) .uxw-err { opacity: 0; visibility: hidden; }
+.aic .uxw-table { display: grid; align-content: start; border: 1px solid #DDE1E7; border-radius: 6px; }
+.aic .uxw-tr { display: grid; grid-template-columns: 52px minmax(0, 1.6fr) 56px minmax(0, 1fr); gap: 8px; align-items: center; height: 32px; padding: 0 10px; border-top: 1px solid #ECEEF2; white-space: nowrap; }
+.aic .uxw-tr > span { overflow: hidden; text-overflow: ellipsis; }
+.aic .uxw-tr.th { border-radius: 5px 5px 0 0; border-top: 0; height: 28px; background: #F4F5F7; font-size: 11px; font-weight: 700; color: #6B717C; }
+.aic .wf-tag { justify-self: start; font-size: 10.5px; font-weight: 600; border-radius: 99px; padding: 1px 8px; background: #EEF0F3; color: #4A505B; }
+.aic .wf-tag.b { background: var(--sw-soft); color: var(--sw); }
+.aic .wf-tag.o { background: #fff; box-shadow: inset 0 0 0 1px #C9CED6; }
+.aic .uxw-pag { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-top: 1px solid #ECEEF2; color: #6B717C; font-size: 11px; }
+.aic .uxw-pag i { display: inline-flex; gap: 4px; font-style: normal; }
+.aic .uxw-pag i b { display: inline-grid; place-items: center; width: 20px; height: 20px; border: 1px solid #DDE1E7; border-radius: 4px; font-weight: 600; }
+.aic .uxw-pag i b.on { background: var(--sw); border-color: var(--sw); color: #fff; }
+.aic .uxw-empty { display: grid; place-items: center; align-content: center; gap: 6px; text-align: center; border: 1.5px dashed #C9CED6; border-radius: 6px; }
+.aic .uxw-empty .ill { width: 46px; height: 34px; border: 1.5px solid #C9CED6; border-radius: 5px; position: relative; margin-bottom: 4px; }
+.aic .uxw-empty .ill::before { content: ""; position: absolute; inset: 8px 8px auto; height: 3px; border-radius: 2px; background: #DDE1E7; box-shadow: 0 7px 0 #DDE1E7, 0 14px 0 #DDE1E7; }
+.aic .uxw-empty b { font-size: 13px; color: #1E2430; }
+.aic .uxw-empty small { color: #8A909B; font-size: 11.5px; margin-bottom: 4px; }
+.aic .uxw-err { display: grid; align-content: start; gap: 8px; }
+.aic .uxw-banner { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; border: 1px solid #E8B4AC; background: #FCF1EF; color: #8E2A1D; font-weight: 600; }
+.aic .uxw-banner i { flex: none; width: 16px; height: 16px; border-radius: 50%; background: var(--crit); color: #fff; font: 700 11px/16px var(--fu); text-align: center; font-style: normal; }
+.aic .uxw-banner span:not(.wf-btn) { flex: 1; min-width: 0; }
+.aic .uxw-banner .wf-btn { padding: 4px 10px; }
+.aic .uxw-skel { display: grid; gap: 8px; padding: 4px 2px; }
+.aic .uxw-skel i { height: 10px; border-radius: 4px; background: #EEF0F3; }
+.aic .uxw-skel i:nth-child(odd) { width: 86%; } .aic .uxw-skel i:nth-child(even) { width: 64%; }
+.aic .ux-states { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.aic .ux-states > span:first-child { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ui-mute); }
+.aic .ux-states .ux-tabs { margin-inline-start: 0; background: var(--ui); }
+.aic .ux-states .ux-tabs button[aria-selected="true"] { background: var(--sw-soft); color: var(--sw); box-shadow: none; }
+
 /* site integration */
 .aic .stack { display: none; }
 .aic .phase-head .decision-num { flex: none; }
@@ -560,6 +634,8 @@
   .aic .ch-fields > div { padding-block: 6px; grid-template-columns: 78px minmax(0, 1fr); gap: 8px; }
   .aic .ch-fields dt { white-space: nowrap; }
   .aic .ch-actions button { padding: 8px; }
+  /* UX Library: fixed working areas, so a print keeps one height while it plays */
+  .aic .uxw-canvas { height: 330px; flex: none; }
 }
 @media (max-width: 560px) {
   .aic .chp-row { grid-template-columns: 14px minmax(0, 1fr) auto 24px 28px; }
@@ -585,6 +661,8 @@
   .aic .swl-cards { gap: 6px; }
   .aic .swl-card { padding: 8px 10px; }
   .aic .swl-card span:last-child { font-size: 12.5px; line-height: 1.4; }
+  .aic .uxw-tr { grid-template-columns: 40px minmax(0, 1fr) 46px minmax(0, 76px); gap: 6px; padding: 0 8px; font-size: 11.5px; }
+  .aic .uxw-head h4 { font-size: 15px; }
 }
 
 /* phones: no switching. The ideas stack, each with its line and its own edge-to-edge print that plays when it comes into view */

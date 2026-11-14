@@ -849,7 +849,7 @@
     .paper-cell:nth-child(4) .field-print { transform: rotate(-1.2deg); }
     .paper-cap {
       display: block;
-      font-family: 'Caveat', cursive; font-size: 21px; font-weight: 600;
+      font-family: 'Caveat', cursive; font-size: 24px; font-weight: 600;
       letter-spacing: 0; text-transform: none; line-height: 1.15;
       color: var(--accent);
       margin-top: 14px; padding-left: 6px;
@@ -1347,9 +1347,24 @@
       .ui-loupe[style*="left:5"], .ui-loupe[style*="left:6"], .ui-loupe[style*="left:7"], .ui-loupe[style*="left: 5"], .ui-loupe[style*="left: 6"], .ui-loupe[style*="left: 7"] { margin-left: -16px; }
     }
 </style>
-  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=mw9x1121" />
-  <script src="assets/ai-today/ai-today.js?v=mw9x1121" defer></script>
+  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=ux1126" />
+  <script src="assets/ai-today/ai-today.js?v=ux1126" defer></script>
 <style id="type-floor">
+  /* Type rule: Bricolage for everything you READ (headings, running text); Red Hat Mono caps for everything you SCAN
+     (labels, tags, nav, buttons, captions under numbers); Caveat only for handwritten notes. Nothing below 11px. */
+  .overview-problem, .find-list li, .phase-body, .turn-text, .decision-body, .results-summary, .role-body, .qa-q, .qa-a,
+  .aic .idea-panel p, .aic .st-d {
+    font-family: var(--fd); font-variation-settings: 'opsz' 12; text-transform: none; letter-spacing: 0; font-weight: 400;
+    font-size: 16px; line-height: 1.6; color: var(--ink-dim);
+  }
+  .qa-a { font-weight: 600; color: var(--ink); }
+  :is(.overview-problem, .phase-body, .turn-text, .decision-body, .results-summary, .role-body) :is(strong, b) {
+    font-weight: 600; letter-spacing: 0; color: var(--ink);
+  }
+  .eyebrow-text, .cs-meta-item, .stat-cell-lbl, .result-stat-lbl, .next-label, .foot-line, .foot-sep, .cs-back, .clip-line,
+  .aic .state, .aic .replay, .aic .sticker { font-size: 12px; }
+  .btn-black, .stat-cell-sub, .result-stat-desc { font-size: 13px; }
+  .chapter-link, .pod-label, .pod-time, .ps-tab { font-size: 11px; }
   /* headings that wrap keep heading leading, and break into balanced lines */
   .phase-title, .next-title { line-height: 1.15; text-wrap: balance; }
   /* phones: no label or caption goes below 12px */
@@ -1362,6 +1377,18 @@
     .foot-line { display: block; letter-spacing: .1em; white-space: normal; text-align: center; text-wrap: balance; }
     .foot-line svg { display: inline-block; vertical-align: -3px; margin-left: 4px; }
   }
+
+  /* Challenge: the label and text are shorter than the numbers beside them, so on desktop they stay in view while the numbers scroll by (no empty gap) */
+  .overview-grid { margin-top: 0; }
+  .ov-lead .eyebrow { margin-bottom: 32px; }
+  @media (min-width: 861px) {
+    .ov-lead { position: sticky; top: 96px; }
+    .stat-cells { margin-top: 53px; }   /* the label's height + its gap: the numbers start level with the text */
+  }
+  /* labels under the big words: when they wrap, both lines share the words (never one word alone) */
+  .result-stat-lbl, .stat-cell-lbl { text-wrap: balance; }
+  /* three cards side by side: long words ("Consistency") shrink with the screen instead of pushing the row past its edge */
+  @media (min-width: 861px) { .result-stat { min-width: 0; } .result-stat-num { font-size: clamp(36px, 4.2vw, 56px); } }
 </style>
 <script src="assets/track.js?v=5" async></script>
 </head>
@@ -1481,11 +1508,12 @@
 
 <!-- OVERVIEW -->
 <section class="cs-section cs-section-alt" id="ch-challenge">
-  <div class="eyebrow">
-    <div class="eyebrow-rule"></div>
-    <span class="eyebrow-text">The Challenge</span>
-  </div>
   <div class="overview-grid">
+    <div class="ov-lead">
+      <div class="eyebrow">
+        <div class="eyebrow-rule"></div>
+        <span class="eyebrow-text">The Challenge</span>
+      </div>
     <p class="overview-problem">
       Champion Motors managed hundreds of vehicles moving through the service center every day. Yet the entire operation still relied on paper forms, handwritten windshield notes, and verbal updates between teams.
       <br /><br />
@@ -1495,6 +1523,7 @@
       <br /><br />
       It was designing a digital workflow that gave every team real-time visibility into the service process while reducing operational overhead and improving coordination across the workshop.
     </p>
+    </div>
     <div class="stat-cells">
       <div class="stat-cell">
         <span class="stat-cell-num">80&ndash;200</span>
@@ -1849,7 +1878,7 @@
                 <div class="ch-head"><span class="plate">542-33-894</span><span class="ch-car">גולף TSI 1.0 · 2019</span><span class="ch-bay">עמדה 4</span></div>
                 <div class="ch-src">נוסח מתוך <b>תמונה אחת</b> · יש לאשר לפני שזה עולה ללוח</div>
                 <div class="ch-lang" role="tablist" aria-label="שפת הכרטיס" id="chLang">
-                  <button type="button" role="tab" data-l="he" aria-selected="true">עב</button>
+                  <button type="button" role="tab" data-l="he" lang="he" aria-selected="true">עב</button>
                   <button type="button" role="tab" data-l="en" aria-selected="false">EN</button>
                   <button type="button" role="tab" data-l="ru" aria-selected="false">РУ</button>
                   <button type="button" role="tab" data-l="ar" aria-selected="false">عر</button>

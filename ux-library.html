@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Caveat:wght@600&family=Heebo:wght@400;500;600;700;800&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
   <script src="vendor/gsap.min.js"></script>
   <script src="vendor/ScrollTrigger.min.js"></script>
@@ -1243,7 +1243,24 @@
       .ui-loupe[style*="left:5"], .ui-loupe[style*="left:6"], .ui-loupe[style*="left:7"], .ui-loupe[style*="left: 5"], .ui-loupe[style*="left: 6"], .ui-loupe[style*="left: 7"] { margin-left: -16px; }
     }
 </style>
+  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=ux1126" />
+  <script src="assets/ai-today/ai-today.js?v=ux1126" defer></script>
 <style id="type-floor">
+  /* Type rule: Bricolage for everything you READ (headings, running text); Red Hat Mono caps for everything you SCAN
+     (labels, tags, nav, buttons, captions under numbers); Caveat only for handwritten notes. Nothing below 11px. */
+  .overview-problem, .find-list li, .phase-body, .turn-text, .decision-body, .results-summary, .role-body, .qa-q, .qa-a,
+  .aic .idea-panel p, .aic .st-d {
+    font-family: var(--fd); font-variation-settings: 'opsz' 12; text-transform: none; letter-spacing: 0; font-weight: 400;
+    font-size: 16px; line-height: 1.6; color: var(--ink-dim);
+  }
+  .qa-a { font-weight: 600; color: var(--ink); }
+  :is(.overview-problem, .phase-body, .turn-text, .decision-body, .results-summary, .role-body) :is(strong, b) {
+    font-weight: 600; letter-spacing: 0; color: var(--ink);
+  }
+  .eyebrow-text, .cs-meta-item, .stat-cell-lbl, .result-stat-lbl, .next-label, .foot-line, .foot-sep, .cs-back, .clip-line,
+  .aic .state, .aic .replay, .aic .sticker { font-size: 12px; }
+  .btn-black, .stat-cell-sub, .result-stat-desc { font-size: 13px; }
+  .chapter-link, .pod-label, .pod-time, .ps-tab { font-size: 11px; }
   /* headings that wrap keep heading leading, and break into balanced lines */
   .phase-title, .next-title { line-height: 1.15; text-wrap: balance; }
   /* phones: no label or caption goes below 12px */
@@ -1256,6 +1273,18 @@
     .foot-line { display: block; letter-spacing: .1em; white-space: normal; text-align: center; text-wrap: balance; }
     .foot-line svg { display: inline-block; vertical-align: -3px; margin-left: 4px; }
   }
+
+  /* Challenge: the label and text are shorter than the numbers beside them, so on desktop they stay in view while the numbers scroll by (no empty gap) */
+  .overview-grid { margin-top: 0; }
+  .ov-lead .eyebrow { margin-bottom: 32px; }
+  @media (min-width: 861px) {
+    .ov-lead { position: sticky; top: 96px; }
+    .stat-cells { margin-top: 53px; }   /* the label's height + its gap: the numbers start level with the text */
+  }
+  /* labels under the big words: when they wrap, both lines share the words (never one word alone) */
+  .result-stat-lbl, .stat-cell-lbl { text-wrap: balance; }
+  /* three cards side by side: long words ("Consistency") shrink with the screen instead of pushing the row past its edge */
+  @media (min-width: 861px) { .result-stat { min-width: 0; } .result-stat-num { font-size: clamp(36px, 4.2vw, 56px); } }
 </style>
 <script src="assets/track.js?v=5" async></script>
 </head>
@@ -1316,6 +1345,7 @@
   <a class="chapter-link" href="#ch-process"><span class="ch-label">Process</span><span class="ch-rule"></span></a>
   <a class="chapter-link" href="#ch-design"><span class="ch-label">Design</span><span class="ch-rule"></span></a>
   <a class="chapter-link" href="#ch-results"><span class="ch-label">Impact</span><span class="ch-rule"></span></a>
+  <a class="chapter-link" href="#ch-ai"><span class="ch-label">AI Today</span><span class="ch-rule"></span></a>
 </nav>
 
 <!-- HERO -->
@@ -1348,14 +1378,16 @@
 
 <!-- OVERVIEW -->
 <section class="cs-section cs-section-alt" id="ch-challenge">
-  <div class="eyebrow">
-    <div class="eyebrow-rule"></div>
-    <span class="eyebrow-text">The Challenge</span>
-  </div>
   <div class="overview-grid">
+    <div class="ov-lead">
+      <div class="eyebrow">
+        <div class="eyebrow-rule"></div>
+        <span class="eyebrow-text">The Challenge</span>
+      </div>
     <p class="overview-problem">
       One studio, a team of UX designers, and every wireframe looked like it came from a different one. Each designer rebuilt inputs, dropdowns and tables from scratch, in their own grey, at their own level of finish, with states missing and directions mixed. Clients noticed. Onboarding meant weeks of &ldquo;how do we draw this here&rdquo;. The studio needed one wireframe language: neutral enough for any client, complete enough to ship a wireframe without inventing anything.
     </p>
+    </div>
     <div class="stat-cells">
       <div class="stat-cell">
         <span class="stat-cell-num">0</span>
@@ -1547,22 +1579,87 @@
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Adopted</span>
       <span class="result-stat-lbl">By the whole studio</span>
-      <span class="result-stat-desc">Every UX designer starts from the kit. A new hire wireframes at the team&rsquo;s level in their first week.</span>
     </div>
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Faster</span>
       <span class="result-stat-lbl">Hours back on every project</span>
-      <span class="result-stat-desc">Components, states and both directions arrive ready. The time goes to the product&rsquo;s own questions.</span>
     </div>
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Alive</span>
       <span class="result-stat-lbl">A year in, still moving</span>
-      <span class="result-stat-desc">Updated with every real project need. v2.0 today, and the standard travels with the work.</span>
     </div>
   </div>
   <p class="results-summary">
     What changed is what stopped being discussed. Reviews moved from pixels to flows, clients see one UXpert level whichever designer they get, and the library became the place where the studio&rsquo;s way of working actually lives.
   </p>
+</section>
+
+<section class="cs-section aic" id="ch-ai">
+  <div class="aic-grid" id="aic-uxlibrary">
+    <div class="aic-head">
+    <div class="eyebrow">
+      <div class="eyebrow-rule"></div>
+      <span class="eyebrow-text">Upgraded with AI</span>
+    </div>
+    <div class="phase-head">
+      <span class="decision-num">AI</span>
+      <h2 class="phase-title">A skill built on the library</h2>
+    </div>
+    <p class="phase-body">AI can draw a screen on its own, but every one comes out different. So I built a skill that works from the library. Every screen it makes speaks the studio's language.</p>
+    </div>
+    <div class="ideas single" aria-label="UX Library skill">
+      <div class="idea-item">
+        <button class="idea" type="button" id="ux-t1" aria-controls="ux-p1" aria-expanded="true"><span class="prog"><i></i></span><span class="idea-n">01</span><span class="idea-t">Screens <mark>from a brief</mark></span></button>
+        <div class="idea-panel open" id="ux-p1"><div><p>One sentence in, a screen out. Built only from library components, with every state and both directions. A designer still reviews each one.</p></div></div>
+      </div>
+    </div>
+    <div class="stage">
+      <figure class="print">
+        <span class="sticker"><i></i>Simplified demo</span>
+        <div class="scenes">
+
+          <!-- 01 screens from a brief -->
+          <div class="scene on">
+            <div class="ui uxw" id="uxw">
+              <div class="ui-top"><b>Screen skill</b><span class="ui-mute">builds from UX Library</span>
+                <div class="ux-tabs" id="uxwDir"><button type="button" data-d="rtl" aria-selected="true" lang="he">עב</button><button type="button" data-d="ltr" aria-selected="false">EN</button></div></div>
+              <div class="ux-brief">
+                <div class="sw-input" id="uxwIn"><span id="uxwTyped"></span><span class="sw-caret"></span><span class="sw-ph" id="uxwPh">Describe a screen…</span></div>
+                <button class="btn dark" type="button" id="uxwGo">Build</button>
+              </div>
+              <div class="uxw-body">
+                <div class="uxw-canvas" id="uxwCanvas" dir="rtl" lang="he" data-s="def">
+                  <div class="uxw-head">
+                    <h4 class="wf" data-k="Heading / H2" data-he="הזמנות" data-en="Orders">הזמנות</h4>
+                    <span class="wf wf-btn end" data-k="Button / Primary" data-he="הזמנה חדשה" data-en="New order">הזמנה חדשה</span>
+                  </div>
+                  <div class="uxw-filters">
+                    <span class="wf wf-field search" data-k="Input / Search" data-he="חיפוש לפי לקוח" data-en="Search by customer">חיפוש לפי לקוח</span>
+                    <span class="wf wf-field dd" data-k="Dropdown" data-he="סטטוס: הכול" data-en="Status: All">סטטוס: הכול</span>
+                  </div>
+                  <div class="uxw-main">
+                    <div class="wf uxw-table" data-k="Table / Orders">
+                      <div class="uxw-tr th"><span data-he="מס׳" data-en="No.">מס׳</span><span data-he="לקוח" data-en="Customer">לקוח</span><span data-he="תאריך" data-en="Date">תאריך</span><span data-he="סטטוס" data-en="Status">סטטוס</span></div>
+                      <div class="uxw-tr"><span>1042</span><span data-he="אורן לוגיסטיקה" data-en="Oren Logistics">אורן לוגיסטיקה</span><span>12.11</span><span class="wf-tag b" data-he="בדרך" data-en="On the way">בדרך</span></div>
+                      <div class="uxw-tr"><span>1041</span><span data-he="מאפיית השדה" data-en="Field Bakery">מאפיית השדה</span><span>12.11</span><span class="wf-tag o" data-he="ממתינה" data-en="Pending">ממתינה</span></div>
+                      <div class="uxw-tr"><span>1040</span><span data-he="קפה גינה" data-en="Garden Café">קפה גינה</span><span>11.11</span><span class="wf-tag" data-he="נמסרה" data-en="Delivered">נמסרה</span></div>
+                      <div class="uxw-tr"><span>1039</span><span data-he="דגן ובניו" data-en="Dagan &amp; Sons">דגן ובניו</span><span>11.11</span><span class="wf-tag" data-he="נמסרה" data-en="Delivered">נמסרה</span></div>
+                      <div class="uxw-pag"><span data-he="1–4 מתוך 128" data-en="1–4 of 128">1–4 מתוך 128</span><i><b class="on">1</b><b>2</b><b>3</b></i></div>
+                    </div>
+                    <div class="uxw-empty wf" data-k="Empty state"><span class="ill"></span><b data-he="אין הזמנות עדיין" data-en="No orders yet">אין הזמנות עדיין</b><small data-he="הזמנות חדשות יופיעו כאן" data-en="New orders will show up here">הזמנות חדשות יופיעו כאן</small><span class="wf wf-btn ghost" data-k="Button / Secondary" data-he="הזמנה חדשה" data-en="New order">הזמנה חדשה</span></div>
+                    <div class="uxw-err"><div class="uxw-banner wf" data-k="Alert / Error"><i>!</i><span data-he="לא הצלחנו לטעון את ההזמנות" data-en="We couldn't load the orders">לא הצלחנו לטעון את ההזמנות</span><span class="wf wf-btn ghost end" data-k="Button / Secondary" data-he="נסו שוב" data-en="Try again">נסו שוב</span></div><div class="uxw-skel wf" data-k="Skeleton"><i></i><i></i><i></i><i></i><i></i></div></div>
+                  </div>
+                </div>
+                <div class="ux-states"><span>States</span><div class="ux-tabs" id="uxwStates"><button type="button" data-s="def" aria-selected="true">Default</button><button type="button" data-s="empty" aria-selected="false">Empty</button><button type="button" data-s="err" aria-selected="false">Error</button></div><span class="ux-draft"><i></i>Draft until a designer reviews it</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </figure>
+      <div class="ctl"><span class="state" data-state>Playing · tap to take over</span><button class="replay" type="button">Play again</button></div>
+    </div>
+  </div>
 </section>
 
 <section class="cs-role" id="ch-role">

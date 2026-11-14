@@ -1210,9 +1210,24 @@
       .ui-loupe[style*="left:5"], .ui-loupe[style*="left:6"], .ui-loupe[style*="left:7"], .ui-loupe[style*="left: 5"], .ui-loupe[style*="left: 6"], .ui-loupe[style*="left: 7"] { margin-left: -16px; }
     }
 </style>
-  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=mw9x1121" />
-  <script src="assets/ai-today/ai-today.js?v=mw9x1121" defer></script>
+  <link rel="stylesheet" href="assets/ai-today/ai-today.css?v=ux1126" />
+  <script src="assets/ai-today/ai-today.js?v=ux1126" defer></script>
 <style id="type-floor">
+  /* Type rule: Bricolage for everything you READ (headings, running text); Red Hat Mono caps for everything you SCAN
+     (labels, tags, nav, buttons, captions under numbers); Caveat only for handwritten notes. Nothing below 11px. */
+  .overview-problem, .find-list li, .phase-body, .turn-text, .decision-body, .results-summary, .role-body, .qa-q, .qa-a,
+  .aic .idea-panel p, .aic .st-d {
+    font-family: var(--fd); font-variation-settings: 'opsz' 12; text-transform: none; letter-spacing: 0; font-weight: 400;
+    font-size: 16px; line-height: 1.6; color: var(--ink-dim);
+  }
+  .qa-a { font-weight: 600; color: var(--ink); }
+  :is(.overview-problem, .phase-body, .turn-text, .decision-body, .results-summary, .role-body) :is(strong, b) {
+    font-weight: 600; letter-spacing: 0; color: var(--ink);
+  }
+  .eyebrow-text, .cs-meta-item, .stat-cell-lbl, .result-stat-lbl, .next-label, .foot-line, .foot-sep, .cs-back, .clip-line,
+  .aic .state, .aic .replay, .aic .sticker { font-size: 12px; }
+  .btn-black, .stat-cell-sub, .result-stat-desc { font-size: 13px; }
+  .chapter-link, .pod-label, .pod-time, .ps-tab { font-size: 11px; }
   /* headings that wrap keep heading leading, and break into balanced lines */
   .phase-title, .next-title { line-height: 1.15; text-wrap: balance; }
   /* phones: no label or caption goes below 12px */
@@ -1225,6 +1240,18 @@
     .foot-line { display: block; letter-spacing: .1em; white-space: normal; text-align: center; text-wrap: balance; }
     .foot-line svg { display: inline-block; vertical-align: -3px; margin-left: 4px; }
   }
+
+  /* Challenge: the label and text are shorter than the numbers beside them, so on desktop they stay in view while the numbers scroll by (no empty gap) */
+  .overview-grid { margin-top: 0; }
+  .ov-lead .eyebrow { margin-bottom: 32px; }
+  @media (min-width: 861px) {
+    .ov-lead { position: sticky; top: 96px; }
+    .stat-cells { margin-top: 53px; }   /* the label's height + its gap: the numbers start level with the text */
+  }
+  /* labels under the big words: when they wrap, both lines share the words (never one word alone) */
+  .result-stat-lbl, .stat-cell-lbl { text-wrap: balance; }
+  /* three cards side by side: long words ("Consistency") shrink with the screen instead of pushing the row past its edge */
+  @media (min-width: 861px) { .result-stat { min-width: 0; } .result-stat-num { font-size: clamp(36px, 4.2vw, 56px); } }
 </style>
 <script src="assets/track.js?v=5" async></script>
 </head>
@@ -1344,14 +1371,16 @@
 
 <!-- OVERVIEW -->
 <section class="cs-section cs-section-alt" id="ch-challenge">
-  <div class="eyebrow">
-    <div class="eyebrow-rule"></div>
-    <span class="eyebrow-text">The Challenge</span>
-  </div>
   <div class="overview-grid">
+    <div class="ov-lead">
+      <div class="eyebrow">
+        <div class="eyebrow-rule"></div>
+        <span class="eyebrow-text">The Challenge</span>
+      </div>
     <p class="overview-problem">
       The same complex system had to support very different ways of working. Users needed to monitor system health, investigate issues, and configure how the system behaved &mdash; often moving between all three. The challenge was to reveal the right level of context at the right moment, without losing orientation or exposing everything at once.
     </p>
+    </div>
     <div class="stat-cells">
       <div class="stat-cell">
         <span class="stat-cell-num">3</span>
@@ -1463,15 +1492,15 @@
   <div class="results-stat-row" style="margin-bottom: 0;">
     <div class="result-stat">
       <span class="result-stat-num mark-hl">See it</span>
-      <span class="result-stat-lbl">Understand system health quickly</span>
+      <span class="result-stat-lbl">System health at a glance</span>
     </div>
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Find it</span>
-      <span class="result-stat-lbl">Know where a problem is coming from</span>
+      <span class="result-stat-lbl">Trace a problem to its source</span>
     </div>
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Act on it</span>
-      <span class="result-stat-lbl">Move from information to the relevant action</span>
+      <span class="result-stat-lbl">From information to action</span>
     </div>
   </div>
 </section>
@@ -1587,22 +1616,19 @@
   <div class="results-stat-row">
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Consistent</span>
-      <span class="result-stat-lbl">Shared behaviors across modules</span>
-      <span class="result-stat-desc">Users encounter familiar patterns as they move through the platform.</span>
+      <span class="result-stat-lbl">One behavior, every module</span>
     </div>
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Scalable</span>
-      <span class="result-stat-lbl">New complexity without new conventions</span>
-      <span class="result-stat-desc">New modules and workflows can build on an established interaction model.</span>
+      <span class="result-stat-lbl">New modules, no new rules</span>
     </div>
     <div class="result-stat">
       <span class="result-stat-num mark-hl">Flexible</span>
       <span class="result-stat-lbl">Consistency without sameness</span>
-      <span class="result-stat-desc">Each area can support its own technical depth without becoming a different product.</span>
     </div>
   </div>
   <p class="results-summary">
-    Full UX platform designed from scratch across 4 major modules. 52 screens for Data Pipelines alone. Complete UI kit. Designed for 4 distinct user types with different technical backgrounds.
+    A platform people can find their way through. Admins, engineers and executives each start from the question they came in with, and go as deep as they need without losing their place. The complexity stays in the system instead of on the screen, and every new module joins a language the platform already speaks.
   </p>
 </section>
 

@@ -2159,6 +2159,43 @@
 </style>
 <script src="assets/track.js?v=5" async></script>
 <link rel="stylesheet" href="assets/claude-work/claude-work.css?v=39" />
+<style id="type-scale">
+  /* Type rule: Bricolage for everything you READ (headings, running text); Red Hat Mono caps for everything you SCAN
+     (labels, tags, nav, buttons, captions under numbers); Caveat only for handwritten notes. Nothing below 11px. */
+  .hero-sub, .proj-desc, .cw-sub, .cw-card p, .about-body {
+    font-family: var(--fd); font-variation-settings: 'opsz' 12; text-transform: none; letter-spacing: 0; font-weight: 400;
+    color: var(--ink-dim);
+  }
+  .hero-sub, .proj-desc, .cw-sub { font-size: 16px; line-height: 1.6; }
+  .cw-card p { font-size: 16px; line-height: 1.55; }
+  .about-body { font-size: 16px; line-height: 1.6; }
+  :is(.proj-desc, .cw-sub, .cw-card p, .about-body) :is(strong, b) { font-family: inherit; font-weight: 600; letter-spacing: 0; color: var(--ink); }
+  .hero-sub br { display: none; }
+  .proj-heading { font-size: clamp(32px, 3.6vw, 52px); text-wrap: balance; }
+  @media (min-width: 1100px) { .cw-card p strong { display: block; } }   /* desktop: description, then the punchline on its own line */
+  @media (min-width: 861px) and (max-width: 1099px) { .proj-desc { font-size: 15px; } }   /* small laptops: the card summary stays at 3 lines */
+  @media (min-width: 861px) and (max-width: 1366px) { .proj-tag { font-size: 11px; } }   /* tags stay on one row beside the narrower column */
+  .hero-top-label, .btn-black, .kb-text, nav a:not(.nav-logo) { font-size: 13px; }
+  .stat-lbl, .domain-chip, .logo-ticker-label, .eyebrow-text, .proj-tag, .about-eyebrow-text,
+  .contact-eyebrow-num, .contact-eyebrow-label, .cc-kicker, .cc-note, .foot-line, .foot-sep { font-size: 12px; }
+  .cc-status, .cc-tip { font-size: 11px; }
+  /* About on desktop: the open notebook overhangs its column to the left, so the story text keeps clear of it */
+  @media (min-width: 981px) { #about .about-inner > div:not(.nb-scene) { padding-right: 28px; } }
+  /* small laptops: a smaller notebook leaves the story a readable column */
+  @media (min-width: 981px) and (max-width: 1199px) {
+    #about .about-inner { grid-template-columns: 1fr 600px; gap: 40px; }
+    #about .notebook { width: 300px; }
+    .about-body { font-size: 15px; }
+  }
+  @media (min-width: 981px) and (max-height: 760px) { .about-body { font-size: 15px; } }
+  /* phones: the About beats step down with the screen so the pinned section stays above the fold */
+  @media (max-width: 980px) { #about .ab-beat { font-size: 16px; line-height: 1.6; } }
+  @media (max-width: 480px) { #about .ab-beat { font-size: 15px; } }
+  @media (max-width: 980px) and (max-height: 700px) { #about .ab-beat { font-size: 14px; line-height: 1.55; } }
+  /* hero: one mono size for everything — labels, numbers' captions, chips, buttons. 12px, same tracking; buttons keep their heavier weight */
+  .hero-top-label, .btn-black, .btn-sticker-cv, .stat-lbl, .domain-chip, .logo-ticker-label { font-size: 12px; letter-spacing: .16em; }
+  nav a:not(.nav-logo) { font-size: 12px; letter-spacing: .16em; }   /* the menu matches the hero labels */
+</style>
 </head>
 <body>
 <a class="skip-link" href="#work">Skip to content</a>
@@ -2385,11 +2422,8 @@
       </div>
       <h3 class="proj-heading">The system that replaced a manager’s <span class="mark-hl" style="--mark:rgba(217,104,69,.32)">mental load</span>.</h3>
       <p class="proj-desc">
-        Champion Motors ran their service center on paper — job tickets
-        tucked under windshields, details scrawled on wheels, documents
-        lost in the chaos. I designed <strong>two synchronized interfaces
-        from scratch</strong>: one for the floor manager, one for the mechanic —
-        each built around how they actually work. 100% paper to 100% digital.
+        A service center run on paper. I designed <strong>two synchronized interfaces</strong>
+        for the floor manager and the mechanic. 100% paper to 100% digital.
       </p>
       <div class="proj-tags">
         <span class="proj-tag">B2B</span>
@@ -2411,15 +2445,13 @@
       <h3 class="proj-heading">When the data was all there. Nobody could <span class="mark-hl" style="--mark:rgba(217,104,69,.32)">find it</span>.</h3>
       <p class="proj-desc">
         80% of users didn't know what to ask about their pension.
-        I stopped designing around data categories and started designing
-        around <strong>the questions actually in people's heads</strong> —
-        status first, context second, details on demand.
+        So I designed around <strong>the questions in their heads</strong>.
         Heavy subject, light interface.
       </p>
       <div class="proj-tags">
         <span class="proj-tag">B2C</span>
         <span class="proj-tag">Information Architecture</span>
-        <span class="proj-tag">Progressive Disclosure</span>
+        <span class="proj-tag">Data Viz</span>
         <span class="proj-tag">Fintech</span>
       </div>
       <a href="swiftness.html" class="btn-black">Open case <svg class="hgi" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.5 12L4.99997 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg></a>
@@ -2445,11 +2477,8 @@
       </div>
       <h3 class="proj-heading">Three mental models. <span class="mark-hl" style="--mark:rgba(217,104,69,.32)">One platform.</span></h3>
       <p class="proj-desc">
-        System admins, data engineers, business executives —
-        three groups seeing the same infrastructure completely differently.
-        No prior system, no benchmark. I defined the
-        <strong>platform from scratch</strong>: architecture, visual language,
-        and a unified interface that speaks all three languages at once.
+        Admins, engineers and executives saw the same infrastructure differently.
+        I defined the <strong>platform from scratch</strong>: one interface for all three.
       </p>
       <div class="proj-tags">
         <span class="proj-tag">B2B</span>
@@ -2472,10 +2501,8 @@
       </div>
       <h3 class="proj-heading">One kit. <span class="mark-hl" style="--mark:rgba(217,104,69,.32)">Every wireframe, the same hand.</span></h3>
       <p class="proj-desc">
-        A studio full of UX designers, and every wireframe looked like it came from
-        a different one. I initiated and built the <strong>Figma library</strong>
-        the whole team now starts from: every component in every state, Hebrew and
-        English side by side, grids, type, icons, and a checklist on every page.
+        Every wireframe in the studio looked like a different designer made it.
+        I built the <strong>Figma library</strong> the whole team now starts from.
       </p>
       <div class="proj-tags">
         <span class="proj-tag">Internal</span>
@@ -2524,10 +2551,10 @@
     <ul class="cw-track" aria-label="Tools I built with AI">
       <li class="cw-card">
         <button type="button" class="cw-frame cw-shot" data-shots="qa" aria-label="Open the QA board full size">
-          <img src="assets/claude-work/qa-card.webp" width="1280" height="603" alt="The QA board the skill filled with bugs, each with priority, type and screenshots" decoding="async" /><span class="cw-zoom" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <img src="assets/claude-work/qa-card.webp?v=2" width="1280" height="603" alt="The QA board the skill filled with bugs, each with priority, type and screenshots" decoding="async" /><span class="cw-zoom" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </button>
         <h3>QA against Figma</h3>
-        <p>Compares the live site to Figma and opens every gap as a bug. <strong>Hours of QA, automated.</strong></p>
+        <p>Checks the live site against Figma, every gap a bug. <strong>Hours of QA, automated.</strong></p>
       </li>
       <li class="cw-card">
         <button type="button" class="cw-frame cw-shot cw-live" data-shots="rail" aria-label="Watch the full rail prototype walkthrough">
@@ -2535,21 +2562,21 @@
           <span class="cw-zoom cw-play" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span>
         </button>
         <h3>Behavior prototypes</h3>
-        <p>Live, working artifacts that show how a screen behaves. <strong>Figma can't show that.</strong></p>
+        <p>Working artifacts that show how a screen behaves. <strong>Figma can't show that.</strong></p>
       </li>
       <li class="cw-card">
         <button type="button" class="cw-frame cw-shot" data-shots="versions" aria-label="Open the version history full size">
-          <img src="assets/claude-work/versions-card.webp" width="1280" height="664" alt="Before and after of one screen, from the version history page" decoding="async" /><span class="cw-zoom" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <img src="assets/claude-work/versions-card.webp?v=2" width="1280" height="664" alt="Before and after of one screen, from the version history page" decoding="async" /><span class="cw-zoom" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </button>
         <h3>Version history</h3>
-        <p>Every client change on one before-and-after page, archived in Figma. <strong>No tracking by hand.</strong></p>
+        <p>Every client change on one before-and-after page. <strong>No tracking by hand.</strong></p>
       </li>
       <li class="cw-card cw-card-more">
         <div class="cw-frame cw-frame-more" aria-hidden="true">
           <span class="cw-working"><svg class="cw-spark" viewBox="0 0 40 40"><g fill="currentColor"><rect x="18" y="2" width="4" height="15" rx="2"/><rect x="18" y="23" width="4" height="15" rx="2"/><rect x="2" y="18" width="15" height="4" rx="2"/><rect x="23" y="18" width="15" height="4" rx="2"/><rect x="18" y="2" width="4" height="15" rx="2" transform="rotate(45 20 20)"/><rect x="18" y="23" width="4" height="15" rx="2" transform="rotate(45 20 20)"/><rect x="2" y="18" width="15" height="4" rx="2" transform="rotate(45 20 20)"/><rect x="23" y="18" width="15" height="4" rx="2" transform="rotate(45 20 20)"/></g></svg><span class="cw-status">Building the next one…</span></span>
         </div>
         <h3>And more</h3>
-        <p>Smaller helpers come and go with every project. <strong>The list keeps growing.</strong></p>
+        <p>Smaller helpers come and go with each project. <strong>The list keeps growing.</strong></p>
       </li>
     </ul>
   </div>
@@ -3370,8 +3397,8 @@ window.addEventListener('pageshow', (e) => {
   if (status && !still) setInterval(function () { w = (w + 1) % WORDS.length; status.textContent = WORDS[w]; }, 2600);
 
   // full-size screenshot in a sticker card (a plain fixed layer, so the site's sticker cursor stays above it)
-  var FULL = { qa: ['assets/claude-work/qa-full.webp', 'The team board after one run of the QA skill'],
-               versions: ['assets/claude-work/versions-full.webp', 'Before and after of one screen, from the version history page'],
+  var FULL = { qa: ['assets/claude-work/qa-full.webp?v=2', 'The team board after one run of the QA skill'],
+               versions: ['assets/claude-work/versions-full.webp?v=2', 'Before and after of one screen, from the version history page'],
                rail: ['assets/claude-work/rail-full.mp4', 'Walkthrough of the rail search prototype', 'assets/claude-work/rail-full-poster.webp'] };
   var pop = document.getElementById('cwPop');
   document.body.appendChild(pop);   // out of the section's stacking context, so it covers the nav too
