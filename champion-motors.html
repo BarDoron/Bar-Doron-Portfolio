@@ -1389,6 +1389,8 @@
   .result-stat-lbl, .stat-cell-lbl { text-wrap: balance; }
   /* three cards side by side: long words ("Consistency") shrink with the screen instead of pushing the row past its edge */
   @media (min-width: 861px) { .result-stat { min-width: 0; } .result-stat-num { font-size: clamp(36px, 4.2vw, 56px); } }
+  /* Goals: "For the team / For the business" share the decision-title size, like every other subheading */
+  .goal-title { font-size: clamp(20px, 2vw, 28px); font-variation-settings: 'opsz' 24, 'wght' 800; }
 </style>
 <script src="assets/track.js?v=5" async></script>
 </head>
@@ -1535,7 +1537,7 @@
       </div>
       <div class="stat-cell">
         <span class="stat-cell-num">6</span>
-        <span class="stat-cell-lbl">Digits in a car ID nobody reads from under a chassis</span>
+        <span class="stat-cell-lbl">Digit IDs nobody reads under a car</span>
       </div>
     </div>
   </div>
